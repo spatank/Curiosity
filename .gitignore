@@ -1,14 +1,7 @@
 # <<< Python >>>
 
-*/Data
-*/data
-*/Models
-*/models
-*/output
-*Output
-*/Submit
-*/submit
-*/submission
+*Data
+*data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
