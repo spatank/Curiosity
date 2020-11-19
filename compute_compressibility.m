@@ -27,6 +27,7 @@ for i = 1:length(files)
     load(fullfile(data_path, files(i).name));
     for j = 1:length(all_adj)
         G = full(all_adj{1, j});
+        G(G > 0) = 1; % binarize
         try
             [S, S_low, clusters, Gs] = rate_distortion_upper_info(G, setting, num_pairs);
             C_all(i,j) = mean(S(end) - S);
@@ -38,22 +39,22 @@ end
 
 %% Plot Time vs. Compressibility
 
-clc; close all; clear;
-
-load('/Volumes/My Passport/Curiosity/Data/C_all.mat')
-
-% some compressibility values are complex
-C_all(imag(C_all) ~= 0) = NaN;
-% some are implausibly large positive/negative numbers
-C_all(abs(C_all) > 100) = NaN;
-
-time_steps = 1:length(C_all);
-C_mean = mean(C_all, 'omitnan');
-
-f = figure('color', 'w');
-scatter(time_steps, C_mean, 'filled');
-xlabel('Time Steps', 'FontSize', 15);
-ylabel('Compressibility', 'FontSize', 15);
-title('Time vs. Compressibility', 'FontSize', 15);
+% clc; close all; clear;
+% 
+% load('/Volumes/My Passport/Curiosity/Data/C_all.mat')
+% 
+% % some compressibility values are complex
+% C_all(imag(C_all) ~= 0) = NaN;
+% % some are implausibly large positive/negative numbers
+% C_all(abs(C_all) > 100) = NaN;
+% 
+% time_steps = 1:length(C_all);
+% C_mean = mean(C_all, 'omitnan');
+% 
+% f = figure('color', 'w');
+% scatter(time_steps, C_mean, 'filled');
+% xlabel('Time Steps', 'FontSize', 15);
+% ylabel('Compressibility', 'FontSize', 15);
+% title('Time vs. Compressibility', 'FontSize', 15);
 
 
