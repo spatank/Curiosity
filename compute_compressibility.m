@@ -17,6 +17,8 @@ for i = 1:length(files)
     end
 end
 
+%% Compile Compressibility Values
+
 % initialize empty matrix of compressibility values
 C_all = NaN(length(files), max_time_steps);
 
@@ -33,3 +35,25 @@ for i = 1:length(files)
         end
     end
 end
+
+%% Plot Time vs. Compressibility
+
+clc; close all; clear;
+
+load('/Volumes/My Passport/Curiosity/Data/C_all.mat')
+
+% some compressibility values are complex
+C_all(imag(C_all) ~= 0) = NaN;
+% some are implausibly large positive/negative numbers
+C_all(abs(C_all) > 100) = NaN;
+
+time_steps = 1:length(C_all);
+C_mean = mean(C_all, 'omitnan');
+
+f = figure('color', 'w');
+scatter(time_steps, C_mean, 'filled');
+xlabel('Time Steps', 'FontSize', 15);
+ylabel('Compressibility', 'FontSize', 15);
+title('Time vs. Compressibility', 'FontSize', 15);
+
+
