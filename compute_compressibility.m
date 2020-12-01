@@ -12,6 +12,7 @@ num_pairs = 100;
 max_time_steps = 0;
 for i = 1:length(files)
     load(fullfile(data_path, files(i).name));
+    disp
     if length(all_adj) > max_time_steps
         max_time_steps = length(all_adj);
     end
@@ -37,24 +38,51 @@ for i = 1:length(files)
     end
 end
 
-%% Plot Time vs. Compressibility
+%% Plot Time vs. Compressibility (Binary Networks)
 
-% clc; close all; clear;
-% 
-% load('/Volumes/My Passport/Curiosity/Data/C_all.mat')
-% 
-% % some compressibility values are complex
-% C_all(imag(C_all) ~= 0) = NaN;
-% % some are implausibly large positive/negative numbers
-% C_all(abs(C_all) > 100) = NaN;
-% 
-% time_steps = 1:length(C_all);
-% C_mean = mean(C_all, 'omitnan');
-% 
-% f = figure('color', 'w');
-% scatter(time_steps, C_mean, 'filled');
-% xlabel('Time Steps', 'FontSize', 15);
-% ylabel('Compressibility', 'FontSize', 15);
-% title('Time vs. Compressibility', 'FontSize', 15);
+clc; clear; close all;
+
+load('/Volumes/My Passport/Curiosity/Data/C_all_bin.mat')
+
+% some compressibility values are complex
+C_all(imag(C_all) ~= 0) = NaN;
+% some are implausibly large positive/negative numbers
+C_all(abs(C_all) > 100) = NaN;
+
+time_steps = 1:length(C_all);
+C_mean = mean(C_all, 'omitnan');
+
+f = figure('color', 'w');
+scatter(time_steps, C_mean, 'b', 'filled');
+xlabel('Time Steps', 'FontSize', 15);
+ylabel('Compressibility', 'FontSize', 15);
+title('Time vs. Compressibility (Binary Networks)', 'FontSize', 15);
+
+%% Plot Time vs. Compressibility (Wikipedia2Vec Networks)
+
+clc; clear; close all;
+
+load('/Volumes/My Passport/Curiosity/Data/C_all.mat')
+
+% some compressibility values are complex
+C_all(imag(C_all) ~= 0) = NaN;
+% some are implausibly large positive/negative numbers
+C_all(abs(C_all) > 100) = NaN;
+
+time_steps = 1:length(C_all);
+C_mean = mean(C_all, 'omitnan');
+
+f = figure('color', 'w');
+scatter(time_steps, C_mean, 'b', 'filled');
+xlabel('Time Steps', 'FontSize', 15);
+ylabel('Compressibility', 'FontSize', 15);
+title('Time vs. Compressibility', 'FontSize', 15);
+
+% increase
+% increase then plateau
+% increase then decrease
+% inverted-U
+% two peaks
+% three peaks
 
 
