@@ -1,4 +1,4 @@
-function [S, S_low, clusters, Gs] = rate_distortion_upper_info(G, setting, num_pairs)
+function [S, S_low, clusters, Gs] = rate_distortion_upper_info_new(G, setting, num_pairs)
 % Function to compute rate-distortion curve when compressing a given graph
 % G.
 %
@@ -37,8 +37,9 @@ Gs = cell(1, N); % Gs{n} is the joint transition probability matrix for n cluste
 P_old = G./repmat(sum(G,2),1,N);
 logP_old = log2(P_old);
 logP_old(isinf(logP_old)) = 0;
-[p_ss,~] = eigs(P_old',1); % Works for all networks
-p_ss = p_ss/sum(p_ss);
+[p_ss, D] = eigs(P_old'); % Works for all networks
+[~, ind] = max(diag(D));
+p_ss = p_ss(:,ind)/sum(p_ss(:,ind));
 % p_ss = sum(G,2)/sum(G(:)); % Only true for undirected networks
 p_ss_old = p_ss;
 S_old = -sum(p_ss_old.*sum(P_old.*logP_old,2));
@@ -184,7 +185,7 @@ for n = (N-1):-1:2
     
     p_ss_new = [p_ss_old(inds_not_ij); p_ss_old(i_new) + p_ss_old(j_new)];
     
-    P_joint = repmat(p_ss_old, 1, n+1).*P_old; % chris' original
+    P_joint = repmat(p_ss_old, 1, n+1).*P_old;
     P_joint = [P_joint(inds_not_ij, inds_not_ij), sum(P_joint(inds_not_ij, [i_new j_new]),2);...
         sum(P_joint([i_new j_new], inds_not_ij),1), sum(sum(P_joint([i_new j_new], [i_new j_new])))];
     P_old = P_joint./repmat(p_ss_new, 1, n);
