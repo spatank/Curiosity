@@ -3,8 +3,10 @@ clc; close all; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
+addpath(genpath(fullfile(base_path, 'Data')))
 cd(fullfile(base_path, 'v2'));
-load('persistent_homology_sims.mat')
+% load('persistent_homology_sims.mat') % constant probability model
+load('persistent_homology_sims_2.mat') % proportional probability model
 
 %% Compute compressibility
 
@@ -37,7 +39,8 @@ end
 
 clc; close all; clear;
 
-load('const_prob.mat');
+% load('const_prob.mat');
+load('prop_prob.mat');
 
 mean_compressibility = mean(compressibilities, 'omitnan');
 mean_betti_dim_1 = mean(bettiCurve(:, :, 1), 'omitnan');
