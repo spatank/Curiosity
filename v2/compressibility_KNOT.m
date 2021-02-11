@@ -23,9 +23,9 @@ end
 
 % % initialize empty matrix of compressibility values
 % compressibilities = NaN(length(files), max_size);
-% betti_dim_1_raw = NaN(length(files), max_size);
-% betti_dim_2_raw = NaN(length(files), max_size);
-% betti_dim_3_raw = NaN(length(files), max_size);
+% betti_dim_1 = NaN(length(files), max_size);
+% betti_dim_2 = NaN(length(files), max_size);
+% betti_dim_3 = NaN(length(files), max_size);
 % 
 % for i = 1:length(files)
 %     fprintf('Subject %d of %d.\n', i, length(files))
@@ -46,10 +46,10 @@ end
 %             compressibilities(i, j) = NaN;
 %         end
 %     end
-%     betti_dim_1_raw(i, 1:n) = betti_curves{1, 1}(1:n, 2)';
+%     betti_dim_1(i, 1:n) = betti_curves{1, 1}(1:n, 2)';
 %     % transpose is needed for alignment reasons
-%     betti_dim_2_raw(i, 1:n) = betti_curves{2, 1}(1:n, 2)';
-%     betti_dim_3_raw(i, 1:n) = betti_curves{3, 1}(1:n, 2)';
+%     betti_dim_2(i, 1:n) = betti_curves{2, 1}(1:n, 2)';
+%     betti_dim_3(i, 1:n) = betti_curves{3, 1}(1:n, 2)';
 % end
 % 
 % save_string = fullfile(base_path, 'v2/Data/KNOT/all_KNOT_processed.mat');
