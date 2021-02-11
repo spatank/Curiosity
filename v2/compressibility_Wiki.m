@@ -5,31 +5,30 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath(fullfile(base_path, 'Data')))
-data_path = fullfile(base_path, '/Data/KNOT_processed_Eirene/');
-files = dir(fullfile(data_path, 'subj_*.mat'));
-
-setting = 7;
-num_pairs = 100;
-
-% how large is the largest network?
-max_size = 0;
-for i = 1:length(files)
-    load(fullfile(data_path, files(i).name));
-    if size(adj, 1) > max_size
-        max_size = size(adj, 1);
-    end
-end
+% data_path = fullfile(base_path, 'v2/Data/Wiki/Wiki_preprocessed_Eirene/');
+% files = dir(fullfile(data_path, '*.mat'));
+% % remove hidden files
+% files = files(arrayfun(@(x) ~strcmp(x.name(1), '.'), files));
+% 
+% setting = 7;
+% num_pairs = 100;
+% 
+% % how large is the largest network?
+% max_size = 0;
+% for i = 1:length(files)
+%     load(fullfile(data_path, files(i).name));
+%     if size(adj, 1) > max_size
+%         max_size = size(adj, 1);
+%     end
+% end
 
 %% Compile Compressibility Values
 
-% % initialize empty matrix of compressibility values
+% initialize empty matrix of compressibility values
 % compressibilities = NaN(length(files), max_size);
-% betti_dim_1_raw = NaN(length(files), max_size);
-% betti_dim_2_raw = NaN(length(files), max_size);
-% betti_dim_3_raw = NaN(length(files), max_size);
-% 
+
 % for i = 1:length(files)
-%     fprintf('Subject %d of %d.\n', i, length(files))
+%     fprintf('Topic: %s.\n', i, length(files))
 %     load(fullfile(data_path, files(i).name));
 %     G = weighted_adj;
 %     for j = 1:n
@@ -52,11 +51,50 @@ end
 %     betti_dim_2_raw(i, 1:n) = betti_curves{2, 1}(1:n, 2)';
 %     betti_dim_3_raw(i, 1:n) = betti_curves{3, 1}(1:n, 2)';
 % end
-% 
+
+setting = 7;
+num_pairs = 100;
+
+load('/Volumes/My Passport/Curiosity/v2/Data/Wiki/Wiki_processed_Eirene/weight_G_biophysics.mat');
+G = weighted_adj;
+compressibility = zeros(1, n);
+for j = 1:n
+    G_filt = zeros(n, n);
+    G_filt(1:j, 1:j) = G(1:j, 1:j);
+    G_filt(G_filt == 2 * n) = 0; % set 0 weight edges to 0
+    G_filt(G_filt > 0) = 1; % binarize
+    [components, component_sizes] = conncomp(digraph(G_filt), 'Type', 'Weak');
+    idx = component_sizes(components) == max(component_sizes);
+    largest_G = full(adjacency(subgraph(digraph(G_filt), idx)));
+    try
+        [S, S_low, clusters, Gs] = rate_distortion_upper_info_new(largest_G, setting, num_pairs);
+        compressibility(j) = mean(S(end) - S);
+    catch
+        compressibility(j) = NaN;
+    end
+    fprintf('i = %d of %d, Comp. = %0.3f.\n', j, n, compressibility(j))
+end
+
 % save_string = fullfile(base_path, '/Data', ...
 %     sprintf('subjects_%d.mat', i));
 % save(save_string, 'compressibilities', 'betti_dim_1', ...
 %     'betti_dim_2', 'betti_dim_3');
+
+%% Biophysics
+
+compressibility_smooth = smoothdata(compressibility, 'movmean', 25);
+
+figure;
+hold on
+plot(1:n, compressibility, 'Color', [0.7, 0.7, 0.7], ...
+    'LineWidth', 2);
+plot(1:n, compressibility_smooth, 'LineWidth', 2, ...
+    'Color', [0, 0, 0]);
+hold off
+xlabel('Nodes', 'FontSize', 20);
+ylabel('Compressibility', 'FontSize', 20);
+title('Biophysics');
+prettify
 
 %% Plot Time vs. Compressibility 
 
@@ -121,6 +159,7 @@ xlabel('Nodes', 'FontSize', 20);
 ylabel('Compressibility', 'FontSize', 20);
 title('All KNOT');
 prettify
+
 
 figure;
 hold on
