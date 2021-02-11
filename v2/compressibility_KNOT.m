@@ -83,8 +83,8 @@ figure;
 plot(compressibilities, betti_dim_1_smooth, 'LineWidth', 2, ...
     'Color', [0, 0, 0]);
 xlabel('Compressibility', 'FontSize', 20);
-ylabel('Betti Number', 'FontSize', 20);
-title('Dimension 1', 'FontSize', 15);
+ylabel('Betti Number (Dimension 1)', 'FontSize', 20);
+title('KNOT', 'FontSize', 15);
 prettify
 
 [r_comp_betti_dim_1, p_comp_betti_dim_1, residuals] = ... 
@@ -117,7 +117,7 @@ plot(1:max_size, compressibilities, 'LineWidth', 2, ...
 hold off
 xlabel('Nodes', 'FontSize', 20);
 ylabel('Compressibility', 'FontSize', 20);
-title('All KNOT');
+title('KNOT');
 prettify
 
 figure;
@@ -128,8 +128,8 @@ plot(1:max_size, betti_dim_1_smooth, 'LineWidth', 2, ...
     'Color', [0, 0, 0]);
 hold off
 xlabel('Nodes', 'FontSize', 20);
-ylabel('Betti Number', 'FontSize', 20);
-title('Dimension 1');
+ylabel('Betti Number (Dimension 1)', 'FontSize', 20);
+title('KNOT');
 prettify
 
 % figure;
