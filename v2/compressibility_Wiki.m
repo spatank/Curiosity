@@ -4,7 +4,8 @@ clc; close all; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-data_path = fullfile(base_path, 'v2/Data/KNOT/KNOT_processed_Eirene/');
+addpath(genpath(fullfile(base_path, 'Data')))
+data_path = fullfile(base_path, '/Data/KNOT_processed_Eirene/');
 files = dir(fullfile(data_path, 'subj_*.mat'));
 
 setting = 7;
@@ -52,7 +53,8 @@ end
 %     betti_dim_3_raw(i, 1:n) = betti_curves{3, 1}(1:n, 2)';
 % end
 % 
-% save_string = fullfile(base_path, 'v2/Data/KNOT/all_KNOT_processed.mat');
+% save_string = fullfile(base_path, '/Data', ...
+%     sprintf('subjects_%d.mat', i));
 % save(save_string, 'compressibilities', 'betti_dim_1', ...
 %     'betti_dim_2', 'betti_dim_3');
 
@@ -62,7 +64,7 @@ clc; close all; clear;
 
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction/Analysis'));
 
-load('/Volumes/My Passport/Curiosity/v2/Data/KNOT/all_KNOT_processed.mat')
+load('/Volumes/My Passport/Curiosity/Data/subjects_149.mat')
 
 max_size = size(compressibilities, 2); 
 

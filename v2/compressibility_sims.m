@@ -3,37 +3,36 @@ clc; close all; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-addpath(genpath(fullfile(base_path, 'Data')))
-cd(fullfile(base_path, 'v2'));
+addpath(genpath(fullfile(base_path, 'v2/Data/Simulations')))
 % load('persistent_homology_sims.mat') % constant probability model
 load('persistent_homology_sims_2.mat') % proportional probability model
 
 %% Compute compressibility
 
-setting = 7;
-num_pairs = 100;
-
-compressibilities = zeros(iters, n);
-
-for i = 1:iters
-    fprintf('Iteration %d of %d\n', i, iters);
-    G = all_weighted_Gs(:, :, i);
-    for j = 1:n
-        G_filt = zeros(n, n);
-        G_filt(1:j, 1:j) = G(1:j, 1:j);
-        G_filt(G_filt == 2 * n) = 0; % set 0 weight edges to 0
-        G_filt(G_filt > 0) = 1; % binarize
-        [components, component_sizes] = conncomp(digraph(G_filt), 'Type', 'Weak');
-        idx = component_sizes(components) == max(component_sizes);
-        largest_G = full(adjacency(subgraph(digraph(G_filt), idx)));
-        try
-            [S, S_low, clusters, Gs] = rate_distortion_upper_info_new(largest_G, setting, num_pairs);
-            compressibilities(i, j) = mean(S(end) - S);
-        catch
-            compressibilities(i, j) = NaN;
-        end
-    end
-end
+% setting = 7;
+% num_pairs = 100;
+% 
+% compressibilities = zeros(iters, n);
+% 
+% for i = 1:iters
+%     fprintf('Iteration %d of %d\n', i, iters);
+%     G = all_weighted_Gs(:, :, i);
+%     for j = 1:n
+%         G_filt = zeros(n, n);
+%         G_filt(1:j, 1:j) = G(1:j, 1:j);
+%         G_filt(G_filt == 2 * n) = 0; % set 0 weight edges to 0
+%         G_filt(G_filt > 0) = 1; % binarize
+%         [components, component_sizes] = conncomp(digraph(G_filt), 'Type', 'Weak');
+%         idx = component_sizes(components) == max(component_sizes);
+%         largest_G = full(adjacency(subgraph(digraph(G_filt), idx)));
+%         try
+%             [S, S_low, clusters, Gs] = rate_distortion_upper_info_new(largest_G, setting, num_pairs);
+%             compressibilities(i, j) = mean(S(end) - S);
+%         catch
+%             compressibilities(i, j) = NaN;
+%         end
+%     end
+% end
 
 %% Plot Betti + compressibility curves
 
