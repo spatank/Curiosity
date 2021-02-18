@@ -131,19 +131,3 @@ xlabel('Nodes', 'FontSize', 20);
 ylabel('Betti Number (Dimension 1)', 'FontSize', 20);
 title('KNOT');
 prettify
-
-% figure;
-% plot(compressibilities, betti_dim_2_raw, 'LineWidth', 2, ...
-%     'Color', [0, 0, 0]);
-% xlabel('Compressibility', 'FontSize', 20);
-% ylabel('Betti Number', 'FontSize', 20);
-% title('Dimension 2', 'FontSize', 15);
-% prettify
-% 
-% figure;
-% plot(compressibilities, betti_dim_3_raw, 'LineWidth', 2, ...
-%     'Color', [0, 0, 0]);
-% xlabel('Compressibility', 'FontSize', 20);
-% ylabel('Betti Number', 'FontSize', 20);
-% title('Dimension 3', 'FontSize', 15);
-% prettify

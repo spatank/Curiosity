@@ -8,7 +8,7 @@ addpath(genpath(fullfile(base_path, 'Data')))
 data_path = fullfile(base_path, 'v2/Data/Wiki/Wiki_processed_Eirene/');
 
 
-topic = 'software_engineering';
+topic = 'molecular_biology';
 data_path = fullfile(data_path, strcat(topic, '.mat'));
 load(data_path);
 
@@ -40,15 +40,13 @@ end
 
 %% Plot Time vs. Compressibility 
 
-close all
-
-figure;
-plot(1:n, compressibility, 'LineWidth', 2, ...
-    'Color', [0, 0, 0]);
-xlabel('Node', 'FontSize', 20);
-ylabel('Compressibiility', 'FontSize', 20);
-title('Software Engineering', 'FontSize', 20);
-prettify
+% figure;
+% plot(1:n, compressibility, 'LineWidth', 2, ...
+%     'Color', [0, 0, 0]);
+% xlabel('Node', 'FontSize', 20);
+% ylabel('Compressibiility', 'FontSize', 20);
+% title('Software Engineering', 'FontSize', 20);
+% prettify
 
 betti_dim_1_x = betti_curves{1, 1}(1:end - 1, 1);
 betti_dim_1_y = betti_curves{1, 1}(1:end - 1, 2);
@@ -56,15 +54,15 @@ betti_dim_1_y = betti_curves{1, 1}(1:end - 1, 2);
 betti_dim_2_x = betti_curves{2, 1}(1:end - 1, 1);
 betti_dim_2_y = betti_curves{2, 1}(1:end - 1, 2);
 
-figure;
-hold on
-plot(betti_dim_1_x, betti_dim_1_y, 'LineWidth', 2);
-plot(betti_dim_2_x, betti_dim_2_y, 'LineWidth', 2);
-xlabel('Node', 'FontSize', 20);
-ylabel('Betti Number', 'FontSize', 20);
-title('Software Engineering', 'FontSize', 20);
-legend('Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
-prettify
+% figure;
+% hold on
+% plot(betti_dim_1_x, betti_dim_1_y, 'LineWidth', 2);
+% plot(betti_dim_2_x, betti_dim_2_y, 'LineWidth', 2);
+% xlabel('Node', 'FontSize', 20);
+% ylabel('Betti Number', 'FontSize', 20);
+% title('Optics', 'FontSize', 20);
+% legend('Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
+% prettify
 
 zscore_nan = @(x) bsxfun(@rdivide, bsxfun(@minus, x, mean(x, 'omitnan')), ...
     std(x, 'omitnan'));
@@ -77,7 +75,7 @@ plot(betti_dim_1_x, zscore(betti_dim_1_y), 'LineWidth', 2);
 plot(betti_dim_2_x, zscore(betti_dim_2_y), 'LineWidth', 2);
 xlabel('Node', 'FontSize', 20);
 ylabel('Z-Score', 'FontSize', 20);
-title('Software Engineering', 'FontSize', 20);
+title('Molecular Biology', 'FontSize', 20);
 legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
 prettify
     
