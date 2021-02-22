@@ -38,9 +38,9 @@ end
 
 clc; close all; clear;
 
-% load('const_prob.mat');
+load('const_prob.mat');
 % load('prop_prob.mat');
-load('osc_prob.mat');
+% load('osc_prob.mat');
 
 mean_compressibility = mean(compressibilities, 'omitnan');
 mean_betti_dim_1 = mean(bettiCurve(:, :, 1), 'omitnan');
@@ -52,7 +52,7 @@ plot(1:n, mean_compressibility, 'LineWidth', 2, ...
     'Color', [0, 0, 0]);
 xlabel('Nodes', 'FontSize', 20);
 ylabel('Compressibility', 'FontSize', 20);
-title('Oscillating Probability Model', 'FontSize', 15);
+title('Constant Probability Model', 'FontSize', 15);
 prettify
 
 figure
@@ -62,7 +62,7 @@ plot(1:n, mean_betti_dim_2(1:n), 'LineWidth', 2, 'Color', [0, 0.5, 0]);
 plot(1:n, mean_betti_dim_3(1:n), 'LineWidth', 2, 'Color', [1, 0, 0]);
 xlabel('Nodes', 'FontSize', 20);
 ylabel('Betti Number', 'FontSize', 20);
-title('Oscillating Probability Model', 'FontSize', 15);
+title('Constant Probability Model', 'FontSize', 15);
 legend('dim = 1', 'dim = 2', 'dim = 2', 'Location', 'NorthWest');
 hold off
 prettify

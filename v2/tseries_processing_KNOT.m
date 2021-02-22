@@ -51,7 +51,17 @@ end
 
 %% Plots for testing
 
-for i = 1:num_subjects
+figure;
+hold on
+histogram(all_lengths)
+plot([mean(all_lengths); mean(all_lengths)], ...
+    repmat(ylim', 1, 1), '-r', 'LineWidth', 2)
+hold off
+xlabel('Network Size', 'FontSize', 15);
+ylabel('Frequency', 'FontSize', 15);
+title('KNOT Distribution of Network Sizes', 'FontSize', 15);
+
+for i = 10:10
     plot_subj = i;
     figure;
     subplot(1, 2, 1)
@@ -66,7 +76,7 @@ for i = 1:num_subjects
     title('Re-sampled', 'FontSize', 15);
 end
 
-for i = 1:num_subjects
+for i = 10:10
     plot_subj = i;
     figure;
     subplot(1, 2, 1)
