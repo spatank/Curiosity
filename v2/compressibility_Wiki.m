@@ -78,9 +78,22 @@ ylabel('Z-Score', 'FontSize', 20);
 title('Molecular Biology', 'FontSize', 20);
 legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
 prettify
-    
+
+figure;
+hold on
+plot(1:n, gradient(compressibility, 1), 'LineWidth', 2, ...
+    'Color', [0, 0, 0]);
+plot(betti_dim_1_x, gradient(betti_dim_1_y, 1), 'LineWidth', 2);
+plot(betti_dim_2_x, gradient(betti_dim_2_y, 1), 'LineWidth', 2);
+xlabel('Node', 'FontSize', 20);
+ylabel('Z-Score', 'FontSize', 20);
+title('Molecular Biology', 'FontSize', 20);
+legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
+prettify
+
 
 data_1 = betti_dim_1_y;
 data_2 = compressibility;
 data_1_new = interp1(1:numel(data_1), data_1, linspace(1, numel(data_1), numel(data_2)));
 [r, p] = corr(data_2', data_1_new', 'rows', 'complete', 'type', 'Spearman');
+

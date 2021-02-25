@@ -51,17 +51,17 @@ end
 
 %% Plots for testing
 
-figure;
-hold on
-histogram(all_lengths)
-plot([mean(all_lengths); mean(all_lengths)], ...
-    repmat(ylim', 1, 1), '-r', 'LineWidth', 2)
-hold off
-xlabel('Network Size', 'FontSize', 15);
-ylabel('Frequency', 'FontSize', 15);
-title('KNOT Distribution of Network Sizes', 'FontSize', 15);
+% figure;
+% hold on
+% histogram(all_lengths)
+% plot([mean(all_lengths); mean(all_lengths)], ...
+%     repmat(ylim', 1, 1), '-r', 'LineWidth', 2)
+% hold off
+% xlabel('Network Size', 'FontSize', 15);
+% ylabel('Frequency', 'FontSize', 15);
+% title('KNOT Distribution of Network Sizes', 'FontSize', 15);
 
-for i = 10:10
+for i = 1:10
     plot_subj = i;
     figure;
     subplot(1, 2, 1)
@@ -76,17 +76,17 @@ for i = 10:10
     title('Re-sampled', 'FontSize', 15);
 end
 
-for i = 10:10
-    plot_subj = i;
-    figure;
-    subplot(1, 2, 1)
-    plot(1:size(betti_dim_1, 2), betti_dim_1(plot_subj, :), 'LineWidth', 2, 'Color', [0, 0, 0]);
-    xlabel('Size', 'FontSize', 15)
-    ylabel('Betti Number (Dim. 1)', 'FontSize', 15);
-    title('Original', 'FontSize', 15);
-    subplot(1, 2, 2)
-    plot(1:new_length, resampled_betti_dim_1(plot_subj, :), 'LineWidth', 2, 'Color', [0, 0, 0]);
-    xlabel('Size', 'FontSize', 15)
-    ylabel('Betti Number (Dim. 1)', 'FontSize', 15);
-    title('Re-sampled', 'FontSize', 15);
-end
+% for i = 10:10
+%     plot_subj = i;
+%     figure;
+%     subplot(1, 2, 1)
+%     plot(1:size(betti_dim_1, 2), betti_dim_1(plot_subj, :), 'LineWidth', 2, 'Color', [0, 0, 0]);
+%     xlabel('Size', 'FontSize', 15)
+%     ylabel('Betti Number (Dim. 1)', 'FontSize', 15);
+%     title('Original', 'FontSize', 15);
+%     subplot(1, 2, 2)
+%     plot(1:new_length, resampled_betti_dim_1(plot_subj, :), 'LineWidth', 2, 'Color', [0, 0, 0]);
+%     xlabel('Size', 'FontSize', 15)
+%     ylabel('Betti Number (Dim. 1)', 'FontSize', 15);
+%     title('Re-sampled', 'FontSize', 15);
+% end
