@@ -79,12 +79,50 @@ title('Molecular Biology', 'FontSize', 20);
 legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
 prettify
 
+
+data_1 = betti_dim_1_y;
+data_2 = compressibility;
+data_1_new = interp1(1:numel(data_1), data_1, linspace(1, numel(data_1), numel(data_2)));
+[r, p] = corr(data_2', data_1_new', 'rows', 'complete', 'type', 'Spearman');
+
+%% Curve Fitting
+
+n = double(n);
+
+x_1 = double(2:n); 
+y_1 = zscore_nan(compressibility);
+y_1 = y_1(2:end);
+% [p1, S1] = polyfit(x_1, y_1, 2); % degree 2 polynomial
+S1 = polyfitn(x_1, y_1, 2); % degree 2 polynomial
+x_1_fit = linspace(1, n, 1000);
+% y_1_fit = polyval(p1, x_1_fit);
+y_1_fit = polyval(S1.Coefficients, x_1_fit);
+
+x_2 = betti_dim_1_x;
+y_2 = zscore(betti_dim_1_y);
+% [p2, S2] = polyfit(x_2, y_2, 2); % degree 2 polynomial
+S2 = polyfitn(x_2, y_2, 2); % degree 2 polynomial
+x_2_fit = linspace(min(0), max(x_2), 1000);
+% y_2_fit = polyval(p2, x_2_fit);
+y_2_fit = polyval(S2.Coefficients, x_2_fit);
+
+x_3 = betti_dim_2_x;
+y_3 = zscore(betti_dim_2_y);
+% [p3, S3] = polyfit(x_3, y_3, 2); % degree 2 polynomial
+S3 = polyfitn(x_3, y_3, 2); % degree 2 polynomial
+x_3_fit = linspace(min(0), max(x_3), 1000);
+% y_3_fit = polyval(p3, x_3_fit);
+y_3_fit = polyval(S3.Coefficients, x_3_fit);
+
+
 figure;
 hold on
-plot(1:n, gradient(compressibility, 1), 'LineWidth', 2, ...
-    'Color', [0, 0, 0]);
-plot(betti_dim_1_x, gradient(betti_dim_1_y, 1), 'LineWidth', 2);
-plot(betti_dim_2_x, gradient(betti_dim_2_y, 1), 'LineWidth', 2);
+plot(2:n, y_1, 'LineWidth', 2, ...
+    'LineStyle', '--', 'Color', [0, 0, 0]);
+plot(x_2, y_2, 'LineWidth', 2, ...
+    'LineStyle', '--');
+plot(x_3, y_3, 'LineWidth', 2, ...
+    'LineStyle', '--');
 xlabel('Node', 'FontSize', 20);
 ylabel('Z-Score', 'FontSize', 20);
 title('Molecular Biology', 'FontSize', 20);
@@ -92,8 +130,38 @@ legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest')
 prettify
 
 
-data_1 = betti_dim_1_y;
-data_2 = compressibility;
-data_1_new = interp1(1:numel(data_1), data_1, linspace(1, numel(data_1), numel(data_2)));
-[r, p] = corr(data_2', data_1_new', 'rows', 'complete', 'type', 'Spearman');
+figure;
+hold on
+plot(2:n, y_1, 'LineWidth', 2, ...
+    'LineStyle', '--', 'Color', [0, 0, 0]);
+plot(x_2, y_2, 'LineWidth', 2, ...
+    'LineStyle', '--', 'Color', [0.8500, 0.3250, 0.0980]);
+plot(x_3, y_3, 'LineWidth', 2, ...
+    'LineStyle', '--', 'Color', [0.9290, 0.6940, 0.1250]);
+plot(x_1_fit, y_1_fit, 'LineWidth', 2, ...
+    'Color', [0, 0, 0]);
+plot(x_2_fit, y_2_fit, 'LineWidth', 2, ...
+    'Color', [0.8500, 0.3250, 0.0980]);
+plot(x_3_fit, y_3_fit, 'LineWidth', 2, ...
+    'Color', [0.9290, 0.6940, 0.1250]);
+xlabel('Node', 'FontSize', 20);
+ylabel('Z-Score', 'FontSize', 20);
+title('Molecular Biology', 'FontSize', 20);
+legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
+prettify
 
+
+% Plot gradients
+figure;
+hold on
+plot(x_1_fit, gradient(y_1_fit, x_1_fit(2) - x_1_fit(1)), 'LineWidth', 2, ...
+    'Color', [0, 0, 0]);
+plot(x_2_fit, gradient(y_2_fit, x_2_fit(2) - x_2_fit(1)), 'LineWidth', 2, ...
+    'Color', [0.8500, 0.3250, 0.0980]);
+plot(x_3_fit, gradient(y_3_fit, x_2_fit(2) - x_2_fit(1)), 'LineWidth', 2, ...
+    'Color', [0.9290, 0.6940, 0.1250]);
+xlabel('Node', 'FontSize', 20);
+ylabel('Gradient', 'FontSize', 20);
+title('Molecular Biology', 'FontSize', 20);
+legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
+prettify

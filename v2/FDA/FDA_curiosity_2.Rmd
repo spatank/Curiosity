@@ -1,0 +1,171 @@
+---
+title: "FDA for Curiosity"
+output: html_notebook
+---
+
+This notebook performs functional data analysis (FDA) to examine whether functional curves at the subject-level are related to scalar covariates. The curves are values of compressibility and Betti numbers as networks grow. The scalar covariates come from the five dimensional scale of trait curiosity and include deprivation sensitivity, joyous exploration, social curiosity, thrill seeking, and stress tolerance.
+```{r}
+getwd()
+```
+
+```{r}
+library(R.matlab)
+Curiosity <- readMat("/Volumes/My Passport/Curiosity/v2/FDA/FDA.mat")
+```
+
+```{r}
+
+compressibility <- Curiosity$resampled.comp # functional observations
+betti_1 <- Curiosity$resampled.betti.dim.1 # functional observations
+deprivation_sensitivity <- Curiosity$DS.5D # scalar response
+joyous_exploration <- Curiosity$JE.5D # scalar response 
+social_curiosity <- Curiosity$SC.5D # scalar response 
+stress_tolerance <- Curiosity$ST.5D # scalar response 
+thrill_seeking <- Curiosity$TS.5D # scalar response 
+nodes <- 1:149 # functional argument
+n <- length(unique(Curiosity$ID)) # sample size
+
+X <- as.matrix(betti_1) # functional covariate
+# Y <- deprivation_sensitivity # scalar response
+# Y <- joyous_exploration # scalar response
+# Y <- social_curiosity # scalar response
+# Y <- stress_tolerance # scalar response
+Y <- thrill_seeking # scalar response
+
+dim(X); length(Y)
+```
+
+```{r}
+library(mgcv)
+
+smooth.curves <- array(0, dim(betti_1))
+n <- nrow(betti_1)
+for(j in 1:n){
+  # j = 1
+  fit <- gam(betti_1[j,] ~ s(nodes, k = 10, bs = 'cr'), method = "REML")
+  smooth.curves[j,] <- fit$fitted
+}
+
+matplot(nodes, t(betti_1[sel.crv,]), 
+         type='l', lty=3, lwd=1, col = rainbow(3))
+matlines(nodes, t(smooth.curves[sel.crv,]), 
+         type='l', lty=1, lwd=1, col = rainbow(3))
+```
+
+```{r}
+matplot(nodes, t(betti_1), 
+        type='l', lty=1, col="light grey",
+        main = "KNOT Betti (Dim 1)",
+        xlab="Nodes", ylab="Betti Number")
+sel.crv <- sample(1:n, size = 3, replace = FALSE)
+matlines(nodes, t(betti_1[sel.crv,]), 
+         type='l', lty=1, lwd=2, col = rainbow(3))
+```
+
+```{r}
+mean.hat <- colMeans(betti_1)
+matplot(nodes, t(betti_1), 
+        type='l', lty=10, col="light grey",
+        main = "KNOT Betti (Dim 1)",
+        xlab="Nodes", ylab="Betti Number")
+lines(nodes, mean.hat, col='blue', lwd=2)
+```
+
+```{r}
+matplot(colMeans(betti_1), colMeans(compressibility), 
+        type='l', lty=10, col="blue", lwd = 2,
+        main = "KNOT Betti (Dim 1)",
+        xlab="Betti Number", ylab="Compressibility")
+```
+
+```{r}
+library(refund)
+fpca_res <- fpca.sc(X, argvals = nodes, pve = 0.97)
+
+m <- length(nodes)
+efn <- fpca_res$efunctions*sqrt(m)
+eval <- fpca_res$evalues/m
+scr <- fpca_res$scores/sqrt(m)
+npc <- fpca_res$npc
+```
+
+```{r}
+matplot(nodes, efn, type='l', lty=1, lwd=2,
+        col=rainbow(fpca_res$npc),
+        main = "Estimated eigenfunctions", ylab="",
+        xlab = "Nodes")
+legend("topleft", col = rainbow(fpca_res$npc), 
+       lwd=2, lty=1, legend = paste0("fPC", 1:fpca_res$npc),
+       cex = 1.5, bty = "n")
+```
+
+```{r}
+k.pc <- 1
+effect <- sqrt(eval[k.pc])*efn[,k.pc]
+mu_hat <- fpca_res$mu
+
+par(mfrow = c(2,1))
+plot(nodes, efn[,k.pc], type='l', lwd=2, lty=1, 
+     xlab = "Nodes", ylab="", main = paste("fPC", k.pc))
+
+matplot(nodes, cbind(mu_hat-effect, mu_hat+effect), 
+        col=c("red", "blue"), pch = c("-", "+"),
+        main = paste0("fPC", k.pc), 
+        xlab = "Nodes", ylab="")
+lines(nodes, mu_hat, lwd=2)
+```
+```{r}
+out = lm(Y ~ scr) ## Multiple linear regression
+beta_hat = out$coefficients
+beta_hat
+```
+
+```{r}
+par(mfrow=c(1,1))
+beta_fn_hat  = efn%*% as.matrix(beta_hat[-1], col=1)
+plot(nodes, beta_fn_hat, type='l', lwd=2,
+     xlab="Nodes", ylab = "", main="Estimated Coefficient Function")
+```
+
+```{r}
+set.seed(12)
+n.crv <- 3
+sel.crv <- sample(1:n, size=n.crv, replace = FALSE)
+# sel.crv
+
+matplot(nodes, t(fpca_res$Yhat[sel.crv,]), type='l', lwd=2, lty=1,
+        xlab="Nodes", ylab="Betti Number (dim 1)", main="Three Randomly Selected Curves")
+```
+
+```{r}
+par(mfrow=c(3,3))
+for(i in 1:3){
+    ind <- sel.crv[i]
+    demeaned <- fpca_res$Yhat[ind,]-as.vector(fpca_res$mu)
+    
+    matplot(nodes, t(fpca_res$Yhat[sel.crv,]-t(matrix(rep(fpca_res$mu,3), nrow=149))), 
+            type='l', lwd=2, lty=1, col = 'light grey',
+        xlab="Nodes", ylab="Demeaned Betti Number 1", main="")
+    lines(nodes, demeaned, type='l', lwd=2, col='red')
+    
+
+    plot(nodes, beta_fn_hat, type='l', lwd=2,
+         xlab="Nodes", ylab = "Estimated Coefficient Fn", main="")
+    plot(nodes, demeaned*beta_fn_hat,type='l', lwd=2, col='blue',
+         xlab="Nodes", ylab = "", ylim=c(-55, 70),
+         main=round(mean(demeaned*beta_fn_hat), 2))
+}
+```
+
+```{r}
+par(mfrow=c(1,1))
+plot(Y, out$fitted, cex=0.5, ylab="Fitted", xlab="Observed",
+     main="Thrill Seeking")
+abline(a = 0, b = 1)
+```
+
+```{r}
+Rsq = 1-sum((out$residuals)^2)/sum((Y- mean(Y))^2)
+Rsq
+```
+
