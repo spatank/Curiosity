@@ -18,6 +18,7 @@ num_pairs = 100;
 %% Compute Compressibility
 
 compressibility = zeros(1, n);
+degrees_of_freedom = zeros(1, n);
 
 G = weighted_adj;
 for j = 1:n
@@ -29,6 +30,8 @@ for j = 1:n
     [components, component_sizes] = conncomp(digraph(G_filt), 'Type', 'Weak');
     idx = component_sizes(components) == max(component_sizes);
     largest_G = full(adjacency(subgraph(digraph(G_filt), idx)));
+    [num_nodes, num_edges] = network_size(largest_G);
+    degrees_of_freedom(j) = (2 * num_nodes) - num_edges;
     try
         [S, S_low, clusters, Gs] = rate_distortion_upper_info_new(largest_G, setting, num_pairs);
         compressibility(j) = mean(S(end) - S);
@@ -71,12 +74,15 @@ figure;
 hold on
 plot(1:n, zscore_nan(compressibility), 'LineWidth', 2, ...
     'Color', [0, 0, 0]);
-plot(betti_dim_1_x, zscore(betti_dim_1_y), 'LineWidth', 2);
-plot(betti_dim_2_x, zscore(betti_dim_2_y), 'LineWidth', 2);
+plot(1:n, zscore(degrees_of_freedom), 'LineWidth', 2, ...
+    'Color', [0.8500, 0.3250, 0.0980]);
+plot(betti_dim_1_x, zscore(betti_dim_1_y), 'LineWidth', 2, ...
+    'Color', [0.9290, 0.6940, 0.1250]);
+% plot(betti_dim_2_x, zscore(betti_dim_2_y), 'LineWidth', 2);
 xlabel('Node', 'FontSize', 20);
 ylabel('Z-Score', 'FontSize', 20);
 title('Molecular Biology', 'FontSize', 20);
-legend('Compressibility', 'Dimension 1', 'Dimension 2', 'Location', 'NorthWest');
+legend('Compressibility', '2*n - e', 'Dimension 1', 'Location', 'NorthWest');
 prettify
 
 
