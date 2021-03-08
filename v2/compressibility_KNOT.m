@@ -21,40 +21,40 @@ end
 
 %% Compile Compressibility Values
 
-% % initialize empty matrix of compressibility values
-% compressibilities = NaN(length(files), max_size);
-% betti_dim_1 = NaN(length(files), max_size);
-% betti_dim_2 = NaN(length(files), max_size);
-% betti_dim_3 = NaN(length(files), max_size);
-% 
-% for i = 1:length(files)
-%     fprintf('Subject %d of %d.\n', i, length(files))
-%     load(fullfile(data_path, files(i).name));
-%     G = weighted_adj;
-%     for j = 1:n
-%         G_filt = zeros(n, n);
-%         G_filt(1:j, 1:j) = G(1:j, 1:j);
-%         G_filt(G_filt == 2 * n) = 0; % set 0 weight edges to 0
-%         G_filt(G_filt > 0) = 1; % binarize
-%         [components, component_sizes] = conncomp(digraph(G_filt), 'Type', 'Weak');
-%         idx = component_sizes(components) == max(component_sizes);
-%         largest_G = full(adjacency(subgraph(digraph(G_filt), idx)));
-%         try
-%             [S, S_low, clusters, Gs] = rate_distortion_upper_info_new(largest_G, setting, num_pairs);
-%             compressibilities(i, j) = mean(S(end) - S);
-%         catch
-%             compressibilities(i, j) = NaN;
-%         end
-%     end
-%     betti_dim_1(i, 1:n) = betti_curves{1, 1}(1:n, 2)';
-%     % transpose is needed for alignment reasons
-%     betti_dim_2(i, 1:n) = betti_curves{2, 1}(1:n, 2)';
-%     betti_dim_3(i, 1:n) = betti_curves{3, 1}(1:n, 2)';
-% end
-% 
-% save_string = fullfile(base_path, 'v2/Data/KNOT/all_KNOT_processed.mat');
-% save(save_string, 'compressibilities', 'betti_dim_1', ...
-%     'betti_dim_2', 'betti_dim_3');
+% initialize empty matrix of compressibility values
+compressibilities = NaN(length(files), max_size);
+betti_dim_1 = NaN(length(files), max_size);
+betti_dim_2 = NaN(length(files), max_size);
+betti_dim_3 = NaN(length(files), max_size);
+
+for i = 1:length(files)
+    fprintf('Subject %d of %d.\n', i, length(files))
+    load(fullfile(data_path, files(i).name));
+    G = weighted_adj;
+    for j = 1:n
+        G_filt = zeros(n, n);
+        G_filt(1:j, 1:j) = G(1:j, 1:j);
+        G_filt(G_filt == 2 * n) = 0; % set 0 weight edges to 0
+        G_filt(G_filt > 0) = 1; % binarize
+        [components, component_sizes] = conncomp(digraph(G_filt), 'Type', 'Weak');
+        idx = component_sizes(components) == max(component_sizes);
+        largest_G = full(adjacency(subgraph(digraph(G_filt), idx)));
+        try
+            [S, S_low, clusters, Gs] = rate_distortion_upper_info_new(largest_G, setting, num_pairs);
+            compressibilities(i, j) = mean(S(end) - S);
+        catch
+            compressibilities(i, j) = NaN;
+        end
+    end
+    betti_dim_1(i, 1:n) = betti_curves{1, 1}(1:n, 2)';
+    % transpose is needed for alignment reasons
+    betti_dim_2(i, 1:n) = betti_curves{2, 1}(1:n, 2)';
+    betti_dim_3(i, 1:n) = betti_curves{3, 1}(1:n, 2)';
+end
+
+save_string = fullfile(base_path, 'v2/Data/KNOT/all_KNOT_processed.mat');
+save(save_string, 'compressibilities', 'betti_dim_1', ...
+    'betti_dim_2', 'betti_dim_3');
 
 %% Plot Time vs. Compressibility 
 
