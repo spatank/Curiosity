@@ -14,7 +14,6 @@ iters = 100; % number of null networks
 rewire = 10; % each edge rewired approximately this many times
 
 for i = 1:length(files)
-    fprintf('Subject %d of %d.\n', i, length(files))
     load(fullfile(data_path, files(i).name))
     % adj, nodes, subj available
     orig_G = double(adj); % some helper functions need double type arguments
