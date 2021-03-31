@@ -33,14 +33,24 @@ S_low = zeros(1, N); % Lower bound on entropy rate
 clusters = cell(1, N); % clusters{n} lists the nodes in each of the n clusters
 Gs = cell(1, N); % Gs{n} is the joint transition probability matrix for n clusters
 
-% Caluclate initial entropy:
+% Transition probability matrix:
 P_old = G./repmat(sum(G,2),1,N);
+
+% Compute stead-state probabilities (works for directed, connected
+% networks):
+% [p_ss, D] = eigs(P_old');
+% [~, ind] = max(diag(D));
+% p_ss = p_ss(:,ind)/sum(p_ss(:,ind));
+% p_ss_old = p_ss;
+
+% Compute steady-state probabilities (works for undirected, but possibly
+% disconnected networks):
+p_ss = sum(G,2)/sum(G(:));
+p_ss_old = p_ss;
+
+% Compute initial entropy:
 logP_old = log2(P_old);
 logP_old(isinf(logP_old)) = 0;
-[p_ss,~] = eigs(P_old',1); % Works for all networks
-p_ss = p_ss/sum(p_ss);
-% p_ss = sum(G,2)/sum(G(:)); % Only true for undirected networks
-p_ss_old = p_ss;
 S_old = -sum(p_ss_old.*sum(P_old.*logP_old,2));
 P_joint = P_old.*repmat(p_ss_old, 1, N);
 P_low = P_old;
@@ -184,7 +194,7 @@ for n = (N-1):-1:2
     
     p_ss_new = [p_ss_old(inds_not_ij); p_ss_old(i_new) + p_ss_old(j_new)];
     
-    P_joint = repmat(p_ss_old, 1, n+1).*P_old; % chris' original
+    P_joint = repmat(p_ss_old, 1, n+1).*P_old;
     P_joint = [P_joint(inds_not_ij, inds_not_ij), sum(P_joint(inds_not_ij, [i_new j_new]),2);...
         sum(P_joint([i_new j_new], inds_not_ij),1), sum(sum(P_joint([i_new j_new], [i_new j_new])))];
     P_old = P_joint./repmat(p_ss_new, 1, n);
