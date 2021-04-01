@@ -5,10 +5,10 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
-data_path = fullfile(base_path, 'v5/Data/KNOT/Preprocessed/');
+data_path = fullfile(base_path, 'v5/Data/Wiki/Preprocessed/');
 
-subj_ID = 122;
-load(strcat(data_path, 'subj_', string(subj_ID), '_preprocessed.mat'));
+topic = 'geometry';
+load(strcat(data_path, topic, '_preprocessed.mat'));
 
 setting = 7;
 num_pairs = 100;
@@ -47,8 +47,6 @@ end
 
 %% Edge rewired networks
 
-% iter 2, stage 90:174
-
 C_edge_rewired = zeros(num_iters, n);
 DoF_edge_rewired = zeros(num_iters, n);
 
@@ -85,8 +83,7 @@ end
 
 %% Latticized networks
 
-% iter 2, stage 54:132
-% iter 7, stage 172:185
+% iter 11, stage 378:395
 
 C_latticized = zeros(num_iters, n);
 DoF_latticized = zeros(num_iters, n);
@@ -137,7 +134,7 @@ xlabel('Nodes', 'FontSize', 20);
 ylabel('DoF', 'FontSize', 20);
 legend('Original', 'Edges Rewired', 'Latticized', ...
     'Location', 'NW');
-title(strcat({'Subj. '}, string(subj_ID), {': DoF'}));
+title('DoF');
 prettify
 
 figure;
@@ -153,7 +150,7 @@ xlabel('Nodes', 'FontSize', 20);
 ylabel('Compressibility', 'FontSize', 20);
 legend('Original', 'Edges Rewired', 'Latticized', ...
     'Location', 'NW');
-title(strcat({'Subj. '}, string(subj_ID), {': Compressibility'}));
+title('Compressibility');
 prettify
 
 figure;
@@ -169,5 +166,5 @@ xlabel('Nodes', 'FontSize', 20);
 ylabel('Betti Number', 'FontSize', 20);
 legend('Original', 'Edges Rewired', 'Latticized', ...
     'Location', 'NW');
-title(strcat({'Subj. '}, string(subj_ID), {': Betti Curve'}));
+title('Betti Curve');
 prettify
