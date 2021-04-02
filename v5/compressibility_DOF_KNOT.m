@@ -7,7 +7,7 @@ addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
 data_path = fullfile(base_path, 'v5/Data/KNOT/Preprocessed/');
 
-subj_ID = 122;
+subj_ID = 105;
 load(strcat(data_path, 'subj_', string(subj_ID), '_preprocessed.mat'));
 
 setting = 7;
@@ -47,8 +47,6 @@ end
 
 %% Edge rewired networks
 
-% iter 2, stage 90:174
-
 C_edge_rewired = zeros(num_iters, n);
 DoF_edge_rewired = zeros(num_iters, n);
 
@@ -85,9 +83,6 @@ end
 
 %% Latticized networks
 
-% iter 2, stage 54:132
-% iter 7, stage 172:185
-
 C_latticized = zeros(num_iters, n);
 DoF_latticized = zeros(num_iters, n);
 
@@ -121,53 +116,3 @@ for i = 1:num_iters
         end
     end
 end
-
-%% Plot
-
-figure;
-hold on
-plot(1:n, DoF, 'Color', [0, 0, 0], ...
-    'LineWidth', 2);
-plot(1:n, mean(DoF_edge_rewired, 'omitnan'), 'LineWidth', 2, ...
-    'Color', [0.8500, 0.3250, 0.0980]);
-plot(1:n, mean(DoF_latticized, 'omitnan'), 'LineWidth', 2, ...
-    'Color', [0.9290, 0.6940, 0.1250]);
-hold off
-xlabel('Nodes', 'FontSize', 20);
-ylabel('DoF', 'FontSize', 20);
-legend('Original', 'Edges Rewired', 'Latticized', ...
-    'Location', 'NW');
-title(strcat({'Subj. '}, string(subj_ID), {': DoF'}));
-prettify
-
-figure;
-hold on
-plot(1:n, C, 'Color', [0, 0, 0], ...
-    'LineWidth', 2);
-plot(1:n, mean(C_edge_rewired, 'omitnan'), 'LineWidth', 2, ...
-    'Color', [0.8500, 0.3250, 0.0980]);
-plot(1:n, mean(C_latticized, 'omitnan'), 'LineWidth', 2, ...
-    'Color', [0.9290, 0.6940, 0.1250]);
-hold off
-xlabel('Nodes', 'FontSize', 20);
-ylabel('Compressibility', 'FontSize', 20);
-legend('Original', 'Edges Rewired', 'Latticized', ...
-    'Location', 'NW');
-title(strcat({'Subj. '}, string(subj_ID), {': Compressibility'}));
-prettify
-
-figure;
-hold on
-plot(1:n, bettis_orig(2, :), 'Color', [0, 0, 0], ...
-    'LineWidth', 2);
-plot(1:n, mean(bettis_1_edges_rewired, 'omitnan'), 'LineWidth', 2, ...
-    'Color', [0.8500, 0.3250, 0.0980]);
-plot(1:n, mean(bettis_1_latticized, 'omitnan'), 'LineWidth', 2, ...
-    'Color', [0.9290, 0.6940, 0.1250]);
-hold off
-xlabel('Nodes', 'FontSize', 20);
-ylabel('Betti Number', 'FontSize', 20);
-legend('Original', 'Edges Rewired', 'Latticized', ...
-    'Location', 'NW');
-title(strcat({'Subj. '}, string(subj_ID), {': Betti Curve'}));
-prettify
