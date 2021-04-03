@@ -7,7 +7,7 @@ addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
 data_path = fullfile(base_path, 'v5/Data/KNOT/Preprocessed/');
 
-subj_ID = 105;
+subj_ID = 115;
 load(strcat(data_path, 'subj_', string(subj_ID), '_preprocessed.mat'));
 
 setting = 7;
@@ -116,3 +116,8 @@ for i = 1:num_iters
         end
     end
 end
+
+%% Variables of interest
+
+clearvars -except DoF C DoF_edge_rewired DoF_latticized C_edge_rewired ...
+    C_latticized n subj_ID
