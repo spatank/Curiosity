@@ -14,7 +14,7 @@ iters = 25; % number of null networks
 rewire = 50; % each edge rewired approximately this many times
 
 for i = 1:length(files)
-    fprintf('Participant %d of %d.\n', i, length(files))
+    fprintf('Participant %d of %d.\n', i, length(files));
     load(fullfile(data_path, files(i).name))
     % adj, nodes, subj available
     G = double(adj); % some helper functions need double type arguments
@@ -23,11 +23,20 @@ for i = 1:length(files)
     edges_rewired_weighted = zeros(n, n, iters);
     latticized_weighted = zeros(n, n, iters);
     for j = 1:iters
+        G_rewired = randmio_und(G, rewire);
+        % sometimes the rewirings are asymmetric
+        while ~issymmetric(G_rewired)
+            G_rewired = randmio_und(G, rewire);
+        end
         edges_rewired_weighted(:, :, j) = ...
-            make_weighted_from_order(randmio_und(G, rewire), 1:n);
-        [latticized, ~, ~, ~] = latmio_und(G, rewire);
+            make_weighted_from_order(G_rewired, 1:n);
+        [G_latticized, ~, ~, ~] = latmio_und(G, rewire);
+        % sometimes the rewirings are asymmetric
+        while ~issymmetric(G_latticized)
+            [G_latticized, ~, ~, ~] = latmio_und(G, rewire);
+        end
         latticized_weighted(:, :, j) = ...
-            make_weighted_from_order(latticized, 1:n);
+            make_weighted_from_order(G_latticized, 1:n);
     end
     save_string = fullfile(base_path, 'v5/Data/KNOT/Preprocessed/', ...
         strcat('subj_', string(subj), '_preprocessed.mat'));
