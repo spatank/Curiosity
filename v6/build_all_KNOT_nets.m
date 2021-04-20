@@ -4,7 +4,7 @@ clc; close all; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-addpath(genpath(fullfile(base_path, 'v5/Data')))
+addpath(genpath(fullfile(base_path, 'v6/Data')))
 data_path = fullfile(base_path, 'v6/Data/KNOT/Raw');
 files = dir(fullfile(data_path, 'subj_*.mat'));
 
