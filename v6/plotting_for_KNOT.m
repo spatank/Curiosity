@@ -4,8 +4,8 @@ clc; close all; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-data_path = '/Volumes/My Passport/Curiosity/v5/Data/KNOT/';
-subj_ID = 115;
+data_path = '/Volumes/My Passport/Curiosity/v6/Data/KNOT/';
+subj_ID = 119;
 load(strcat(data_path, 'subj_', string(subj_ID), '_C_DoF.mat'))
 % load(strcat(data_path, 'subj_', string(subj_ID), '_bettis.mat'))
 num_iters = size(C_edge_rewired, 1);
