@@ -5,8 +5,8 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
-data_path = fullfile(base_path, 'v6/Data/Wiki/Preprocessed/');
-files = dir(fullfile(data_path, '*_preprocessed.mat'));
+data_path = fullfile(base_path, 'v7/Data/KNOT/Preprocessed/');
+files = dir(fullfile(data_path, 'subj_*.mat'));
 
 setting = 7;
 num_pairs = 100;
@@ -14,15 +14,15 @@ num_iters = 25; % for null models
 
 %% Compile metrics of interest 
 
-for topic_idx = 1:length(files)
+for subj_idx = 1:length(files)
         
-    fprintf('%s\n', files(topic_idx).name);
+    fprintf('%s\n', files(subj_idx).name);
     
-    load(fullfile(data_path, files(topic_idx).name));
+    load(fullfile(data_path, files(subj_idx).name));
     
     n = size(G, 1);
-    DoF = zeros(1, n);
-    C = zeros(1, n);
+    clust_coef = NaN(1, n);
+    C = NaN(1, n);
     
     for i = 1:n
         fprintf('Nodes %d of %d.\n', i, n);
@@ -32,12 +32,9 @@ for topic_idx = 1:length(files)
         keep_nodes = find(node_degree ~= 0);
         G_filt = G_filt(keep_nodes, keep_nodes);
         if isempty(G_filt)
-            DoF(i) = NaN;
-            C(i) = NaN;
             continue
         end
-        [~, num_nodes, num_edges] = density_und(G_filt);
-        DoF(i) = (2 * num_nodes) - num_edges;
+        clust_coef(i) = mean(clustering_coef_bu(G_filt));
         try
             [S, S_low, clusters, Gs] = ...
                 rate_distortion_upper_info(G_filt, setting, num_pairs);
@@ -50,9 +47,9 @@ for topic_idx = 1:length(files)
 
     % Edge rewired networks
 
-    C_edge_rewired = zeros(num_iters, n);
-    DoF_edge_rewired = zeros(num_iters, n);
-
+    clust_coef_edge_rewired = NaN(num_iters, n);
+    C_edge_rewired = NaN(num_iters, n);
+    
     for i = 1:num_iters
         curr_weighted_G = edges_rewired_weighted(:, :, i);
         curr_weighted_G(curr_weighted_G == Inf) = 0;
@@ -68,12 +65,9 @@ for topic_idx = 1:length(files)
             keep_nodes = find(node_degree ~= 0);
             G_filt = G_filt(keep_nodes, keep_nodes);
             if isempty(G_filt)
-                DoF_edge_rewired(i, j) = NaN;
-                C_edge_rewired(i, j) = NaN;
                 continue
             end
-            [~, num_nodes, num_edges] = density_und(G_filt);
-            DoF_edge_rewired(i, j) = (2 * num_nodes) - num_edges;
+            clust_coef_edge_rewired(i, j) = mean(clustering_coef_bu(G_filt));
             try
                 [S, S_low, clusters, Gs] = ...
                     rate_distortion_upper_info(G_filt, setting, num_pairs);
@@ -87,9 +81,9 @@ for topic_idx = 1:length(files)
 
     % Latticized networks
 
-    C_latticized = zeros(num_iters, n);
-    DoF_latticized = zeros(num_iters, n);
-
+    clust_coef_latticized = NaN(num_iters, n);
+    C_latticized = NaN(num_iters, n);
+    
     for i = 1:num_iters
         curr_weighted_G = latticized_weighted(:, :, i);
         curr_weighted_G(curr_weighted_G == Inf) = 0;
@@ -105,12 +99,9 @@ for topic_idx = 1:length(files)
             keep_nodes = find(node_degree ~= 0);
             G_filt = G_filt(keep_nodes, keep_nodes);
             if isempty(G_filt)
-                DoF_latticized(i, j) = NaN;
-                C_latticized(i, j) = NaN;
                 continue
             end
-            [~, num_nodes, num_edges] = density_und(G_filt);
-            DoF_latticized(i, j) = (2 * num_nodes) - num_edges;
+            clust_coef_latticized(i, j) = mean(clustering_coef_bu(G_filt));
             try
                 [S, S_low, clusters, Gs] = ...
                     rate_distortion_upper_info(G_filt, setting, num_pairs);
@@ -123,11 +114,10 @@ for topic_idx = 1:length(files)
     end
 
     % Save variables of interest    
-    parse_filename = split(files(topic_idx).name, '_');
-    topic_ID = strjoin(parse_filename(1:end-1), '_');
-    save(strcat(topic_ID, '_C_DoF.mat'), ...
-        'DoF', 'C', 'DoF_edge_rewired', 'DoF_latticized', 'C_edge_rewired', ...
-        'C_latticized', 'n', 'topic_ID');
+    parse_filename = split(files(subj_idx).name, '_');
+    subj_ID = str2double(parse_filename{2});
+    save([parse_filename{1}, '_', parse_filename{2}, '_C_clust_coef.mat'], ...
+        'clust_coef', 'C', 'clust_coef_edge_rewired', 'clust_coef_latticized', ...
+        'C_edge_rewired', 'C_latticized', 'n', 'subj_ID');
     
 end
-

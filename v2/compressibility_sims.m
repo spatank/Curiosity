@@ -36,9 +36,9 @@ end
 
 %% Plot Betti + compressibility curves
 
-clc; close all; clear;
+% clc; close all; clear;
 
-load('const_prob.mat');
+% load('const_prob.mat');
 % load('prop_prob.mat');
 % load('osc_prob.mat');
 
@@ -48,8 +48,12 @@ mean_betti_dim_2 = mean(bettiCurve(:, :, 2), 'omitnan');
 mean_betti_dim_3 = mean(bettiCurve(:, :, 3), 'omitnan');
 
 figure;
+hold on
+plot(1:n, compressibilities, 'LineWidth', 2, ...
+    'Color', [0.7, 0.7, 0.7]);
 plot(1:n, mean_compressibility, 'LineWidth', 2, ...
     'Color', [0, 0, 0]);
+hold off
 xlabel('Nodes', 'FontSize', 20);
 ylabel('Compressibility', 'FontSize', 20);
 title('Constant Probability Model', 'FontSize', 15);
@@ -63,8 +67,19 @@ plot(1:n, mean_betti_dim_3(1:n), 'LineWidth', 2, 'Color', [1, 0, 0]);
 xlabel('Nodes', 'FontSize', 20);
 ylabel('Betti Number', 'FontSize', 20);
 title('Constant Probability Model', 'FontSize', 15);
-legend('dim = 1', 'dim = 2', 'dim = 2', 'Location', 'NorthWest');
+legend('dim = 1', 'dim = 2', 'dim = 3', 'Location', 'NorthWest');
 hold off
+prettify
+
+figure
+hold on
+data = bettiCurve(:, :, 2);
+plot(1:n, data(:, 1:n), 'LineWidth', 2, 'Color', [0.7, 0.7, 0.7]);
+plot(1:n, mean_betti_dim_2(1:n), 'LineWidth', 2, 'Color', [0, 0, 0]);
+hold off
+xlabel('Nodes', 'FontSize', 20);
+ylabel('Cycles', 'FontSize', 20);
+title('Constant Probability Model', 'FontSize', 15);
 prettify
 
 figure;
