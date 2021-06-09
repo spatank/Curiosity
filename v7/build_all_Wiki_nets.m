@@ -5,7 +5,7 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/BCT'))
 addpath(genpath(fullfile(base_path, 'Helper')))
-addpath(genpath(fullfile(base_path, 'v6/Data/Wiki/Raw')))
+addpath(genpath(fullfile(base_path, 'v7/Data/Wiki/Raw')))
 
 topics = ["molecular_biology"; "geometry"; "optics"; "software_engineering"; ...
     "abstract_algebra"];
@@ -21,8 +21,7 @@ for i = 1:length(topics)
     load(strcat(topic, '.mat'));
     % adj, nodes, topics, edge_info available
     G = double(adj); % some helper functions need double type arguments
-    % something in the generation process makes these networks not be binary
-    G(G ~= 0) = 1; % force edges to be 1s and non-edges to be 0s
+    G(logical(eye(size(G)))) = 0; % set diagonal entries to 0
     n = size(G, 1);
     weighted_G = make_weighted_from_order(G, 1:n);
     edges_rewired_weighted = zeros(n, n, iters);
@@ -43,7 +42,7 @@ for i = 1:length(topics)
         latticized_weighted(:, :, j) = ...
             make_weighted_from_order(G_latticized, 1:n);
     end    
-    save_string = fullfile(base_path, 'v6/Data/Wiki/Preprocessed/', ...
+    save_string = fullfile(base_path, 'v7/Data/Wiki/Preprocessed/', ...
         strcat(topic, '_preprocessed.mat'));
     save(save_string, 'topic', 'nodes', 'G', 'weighted_G', ...
         'edges_rewired_weighted', 'latticized_weighted');
