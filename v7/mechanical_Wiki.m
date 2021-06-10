@@ -5,18 +5,18 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
-data_path = fullfile(base_path, 'v7/Data/KNOT/Preprocessed/');
-files = dir(fullfile(data_path, 'subj_*.mat'));
+data_path = fullfile(base_path, 'v7/Data/Wiki/Preprocessed/');
+files = dir(fullfile(data_path, '*_preprocessed.mat'));
 
 num_iters = 25; % for null models
 
 %% Compile metrics of interest 
 
-for subj_idx = 1:length(files)
+for topic_idx = 1:length(files)
         
-    fprintf('%s\n', files(subj_idx).name);
+    fprintf('%s\n', files(topic_idx).name);
     
-    load(fullfile(data_path, files(subj_idx).name));
+    load(fullfile(data_path, files(topic_idx).name));
     
     n = size(G, 1);
     d = NaN(1, n);
@@ -24,7 +24,7 @@ for subj_idx = 1:length(files)
     rigid = NaN(1, n);
     conform = NaN(1, n);
     
-    curr_d = 1; 
+    curr_d = 1;
     
     for i = 1:n
         % fprintf('Nodes %d of %d.\n', i, n);
@@ -56,6 +56,7 @@ for subj_idx = 1:length(files)
     DoF_edge_rewired = NaN(num_iters, n);
     rigid_edge_rewired = NaN(num_iters, n);
     conform_edge_rewired = NaN(num_iters, n);
+    
 
     for i = 1:num_iters
         
@@ -98,6 +99,7 @@ for subj_idx = 1:length(files)
     DoF_latticized = NaN(num_iters, n);
     rigid_latticized = NaN(num_iters, n);
     conform_latticized = NaN(num_iters, n);
+    
 
     for i = 1:num_iters
         
@@ -135,13 +137,14 @@ for subj_idx = 1:length(files)
     end
 
     % Save variables of interest    
-    parse_filename = split(files(subj_idx).name, '_');
-    subj_ID = str2double(parse_filename{2});
-    save([parse_filename{1}, '_', parse_filename{2}, '_mech.mat'], ...
+    parse_filename = split(files(topic_idx).name, '_');
+    topic_ID = strjoin(parse_filename(1:end-1), '_');
+    save(strcat(topic_ID, '_mech.mat'), ...
         'd', 'DoF', 'rigid', 'conform', ...
         'd_edge_rewired', 'DoF_edge_rewired', 'rigid_edge_rewired', 'conform_edge_rewired', ...
         'd_latticized', 'DoF_latticized', 'rigid_latticized', 'conform_latticized', ...
-        'subj_ID');
+        'topic_ID');
+    
 end
 
 %% Diagnostic Plotting
@@ -205,4 +208,3 @@ end
 % legend('Original', 'Edges Rewired', 'Latticized', ...
 %     'Location', 'NW');
 % prettify
-
