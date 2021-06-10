@@ -7,7 +7,7 @@ addpath(genpath(fullfile(base_path, 'Helper')))
 data_path = fullfile(base_path, 'v7/Data/Simulations/Preprocessed/');
 load(fullfile(data_path, 'simulated_nets.mat'));
 
-num_iters = 25; % for null models
+num_iters = 50; % for null models
 n = 75; % number of nodes in simulated networks
 
 %% Compile metrics of interest 
@@ -87,6 +87,11 @@ end
 
 clearvars -except n d_const DoF_const rigid_const conform_const ...
     d_prop DoF_prop rigid_prop conform_prop
+
+% Save variables of interest    
+filename = 'simulated_nets_mech.mat';
+save(filename, 'd_const', 'DoF_const', 'rigid_const', 'conform_const', ...
+    'd_prop', 'DoF_prop', 'rigid_prop', 'conform_prop');
 
 %% Diagnostic Plotting
 
