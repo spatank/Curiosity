@@ -5,7 +5,7 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
-data_path = fullfile(base_path, 'v7/Data/KNOT/Preprocessed/');
+data_path = fullfile(base_path, 'v8/Data/KNOT/Preprocessed/');
 files = dir(fullfile(data_path, 'subj_*.mat'));
 
 num_iters = 25; % for null models

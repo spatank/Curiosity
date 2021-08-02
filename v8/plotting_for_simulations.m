@@ -4,9 +4,9 @@ clc; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-data_path = fullfile(base_path, 'v7/Data/Simulations/Processed/');
-load(fullfile(data_path, 'C_clust_coef/simulated_nets_C_clust_coef.mat'));
-load(fullfile(data_path, 'Betti/simulated_nets_bettis.mat'));
+data_path = fullfile(base_path, 'v8/Data/Simulations/Processed/');
+load(fullfile(data_path, 'C/simulated_nets_C.mat'));
+load(fullfile(data_path, 'Betti/simulated_nets_PH.mat'));
 load(fullfile(data_path, 'Mech/simulated_nets_mech.mat'));
 
 n = size(C_CP, 2);

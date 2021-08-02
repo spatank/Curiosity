@@ -23,6 +23,8 @@ for topic_idx = 1:length(files)
     n = size(G, 1);
     clust_coef = NaN(1, n);
     C = NaN(1, n);
+    C_norm = NaN(1, n);
+    entropy = NaN(1, n);
     
     for i = 1:n
         fprintf('Nodes %d of %d.\n', i, n);
@@ -39,9 +41,10 @@ for topic_idx = 1:length(files)
             [S, S_low, clusters, Gs] = ...
                 rate_distortion_upper_info(G_filt, setting, num_pairs);
             C(i) = mean(S(end) - S);
+            C_norm(i) = C(i)/S(end);
+            entropy(i) = S(end);
         catch
             fprintf('Error caught; size. %d\n', i);
-            C(i) = NaN;
         end
     end
 
@@ -49,6 +52,8 @@ for topic_idx = 1:length(files)
     
     clust_coef_edge_rewired = NaN(num_iters, n);
     C_edge_rewired = NaN(num_iters, n);
+    C_norm_edge_rewired = NaN(num_iters, n);
+    entropy_edge_rewired = NaN(num_iters, n);
     
 
     for i = 1:num_iters
@@ -73,8 +78,9 @@ for topic_idx = 1:length(files)
                 [S, S_low, clusters, Gs] = ...
                     rate_distortion_upper_info(G_filt, setting, num_pairs);
                 C_edge_rewired(i, j) = mean(S(end) - S);
+                C_norm_edge_rewired(i, j) = C_edge_rewired(i, j)/S(end);
+                entropy_edge_rewired(i, j) = S(end);
             catch
-                C_edge_rewired(i, j) = NaN;
                 fprintf('Rewired: error in iter %d at stage %d.\n', i, j);
             end
         end
@@ -84,6 +90,8 @@ for topic_idx = 1:length(files)
     
     clust_coef_latticized = NaN(num_iters, n);
     C_latticized = NaN(num_iters, n);
+    C_norm_latticized = NaN(num_iters, n);
+    entropy_latticized = NaN(num_iters, n);
     
 
     for i = 1:num_iters
@@ -108,8 +116,9 @@ for topic_idx = 1:length(files)
                 [S, S_low, clusters, Gs] = ...
                     rate_distortion_upper_info(G_filt, setting, num_pairs);
                 C_latticized(i, j) = mean(S(end) - S);
+                C_norm_latticized(i, j) = C_latticized(i, j)/S(end);
+                entropy_latticized(i, j) = S(end);
             catch
-                C_latticized(i, j) = NaN;
                 fprintf('Latticized: error in iter %d at stage %d.\n', i, j);
             end
         end
@@ -118,9 +127,11 @@ for topic_idx = 1:length(files)
     % Save variables of interest    
     parse_filename = split(files(topic_idx).name, '_');
     topic_ID = strjoin(parse_filename(1:end-1), '_');
-    save(strcat(topic_ID, '_C_clust_coef.mat'), ...
-        'clust_coef', 'C', 'clust_coef_edge_rewired', 'clust_coef_latticized', ...
-        'C_edge_rewired', 'C_latticized', 'n', 'topic_ID');
+    save(strcat(topic_ID, '_C.mat'), ...
+        'clust_coef', 'C', 'C_norm', 'entropy', ...
+        'clust_coef_edge_rewired', 'C_edge_rewired', 'C_norm_edge_rewired', 'entropy_edge_rewired', ...
+        'clust_coef_latticized', 'C_latticized', 'C_norm_latticized', 'entropy_latticized', ...
+        'n', 'topic_ID');
     
 end
 

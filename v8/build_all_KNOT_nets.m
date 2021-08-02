@@ -4,8 +4,8 @@ clc; close all; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-addpath(genpath(fullfile(base_path, 'v7/Data')))
-data_path = fullfile(base_path, 'v7/Data/KNOT/Raw');
+addpath(genpath(fullfile(base_path, 'v8/Data')))
+data_path = fullfile(base_path, 'v8/Data/KNOT/Raw');
 files = dir(fullfile(data_path, 'subj_*.mat'));
 
 %% Build networks
@@ -39,7 +39,7 @@ for i = 1:length(files)
         latticized_weighted(:, :, j) = ...
             make_weighted_from_order(G_latticized, 1:n);
     end
-    save_string = fullfile(base_path, 'v7/Data/KNOT/Preprocessed/', ...
+    save_string = fullfile(base_path, 'v8/Data/KNOT/Preprocessed/', ...
         strcat('subj_', string(subj), '_preprocessed.mat'));
     save(save_string, 'subj', 'nodes', 'G', 'weighted_G', ...
         'edges_rewired_weighted', 'latticized_weighted');

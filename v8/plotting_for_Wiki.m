@@ -6,7 +6,7 @@ base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 data_path = '/Volumes/My Passport/Curiosity/v7/Data/Wiki/';
 topic = 'molecular_biology';
-load(strcat(data_path, 'Processed/C_clust_coef/', topic, '_C_clust_coef.mat'))
+load(strcat(data_path, 'Processed/C/', topic, '_C.mat'))
 load(strcat(data_path, 'Processed/Betti/', topic, '_bettis.mat'))
 load(strcat(data_path, 'Processed/Mech/', topic, '_mech.mat'))
 num_iters = size(C_edge_rewired, 1);

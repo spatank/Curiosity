@@ -5,7 +5,7 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
-data_path = fullfile(base_path, 'v7/Data/KNOT/Preprocessed/');
+data_path = fullfile(base_path, 'v8/Data/KNOT/Preprocessed/');
 files = dir(fullfile(data_path, 'subj_*.mat'));
 
 setting = 7;
@@ -23,6 +23,8 @@ for subj_idx = 1:length(files)
     n = size(G, 1);
     clust_coef = NaN(1, n);
     C = NaN(1, n);
+    C_norm = NaN(1, n);
+    entropy = NaN(1, n);
     
     for i = 1:n
         fprintf('Nodes %d of %d.\n', i, n);
@@ -39,16 +41,19 @@ for subj_idx = 1:length(files)
             [S, S_low, clusters, Gs] = ...
                 rate_distortion_upper_info(G_filt, setting, num_pairs);
             C(i) = mean(S(end) - S);
+            C_norm(i) = C(i)/S(end);
+            entropy(i) = S(end);
         catch
             fprintf('Error caught; size. %d\n', i);
-            C(i) = NaN;
         end
     end
-
+    
     % Edge rewired networks
 
     clust_coef_edge_rewired = NaN(num_iters, n);
     C_edge_rewired = NaN(num_iters, n);
+    C_norm_edge_rewired = NaN(num_iters, n);
+    entropy_edge_rewired = NaN(num_iters, n);
     
     for i = 1:num_iters
         curr_weighted_G = edges_rewired_weighted(:, :, i);
@@ -72,8 +77,9 @@ for subj_idx = 1:length(files)
                 [S, S_low, clusters, Gs] = ...
                     rate_distortion_upper_info(G_filt, setting, num_pairs);
                 C_edge_rewired(i, j) = mean(S(end) - S);
+                C_norm_edge_rewired(i, j) = C_edge_rewired(i, j)/S(end);
+                entropy_edge_rewired(i, j) = S(end);
             catch
-                C_edge_rewired(i, j) = NaN;
                 fprintf('Rewired: error in iter %d at stage %d.\n', i, j);
             end
         end
@@ -83,6 +89,8 @@ for subj_idx = 1:length(files)
 
     clust_coef_latticized = NaN(num_iters, n);
     C_latticized = NaN(num_iters, n);
+    C_norm_latticized = NaN(num_iters, n);
+    entropy_latticized = NaN(num_iters, n);
     
     for i = 1:num_iters
         curr_weighted_G = latticized_weighted(:, :, i);
@@ -106,8 +114,9 @@ for subj_idx = 1:length(files)
                 [S, S_low, clusters, Gs] = ...
                     rate_distortion_upper_info(G_filt, setting, num_pairs);
                 C_latticized(i, j) = mean(S(end) - S);
+                C_norm_latticized(i, j) = C_latticized(i, j)/S(end);
+                entropy_latticized(i, j) = S(end);
             catch
-                C_latticized(i, j) = NaN;
                 fprintf('Latticized: error in iter %d at stage %d.\n', i, j);
             end
         end
@@ -116,8 +125,10 @@ for subj_idx = 1:length(files)
     % Save variables of interest    
     parse_filename = split(files(subj_idx).name, '_');
     subj_ID = str2double(parse_filename{2});
-    save([parse_filename{1}, '_', parse_filename{2}, '_C_clust_coef.mat'], ...
-        'clust_coef', 'C', 'clust_coef_edge_rewired', 'clust_coef_latticized', ...
-        'C_edge_rewired', 'C_latticized', 'n', 'subj_ID');
+    save([parse_filename{1}, '_', parse_filename{2}, '_C.mat'], ...
+        'clust_coef', 'C', 'C_norm', 'entropy', ...
+        'clust_coef_edge_rewired', 'C_edge_rewired', 'C_norm_edge_rewired', 'entropy_edge_rewired', ...
+        'clust_coef_latticized', 'C_latticized', 'C_norm_latticized', 'entropy_latticized', ...
+        'n', 'subj_ID');
     
 end

@@ -4,7 +4,7 @@ clc; close all; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-data_path = fullfile(base_path, 'v7/Data/Simulations/Preprocessed/');
+data_path = fullfile(base_path, 'v8/Data/Simulations/');
 load(fullfile(data_path, 'simulated_nets.mat'));
 
 num_iters = 50; % for null models

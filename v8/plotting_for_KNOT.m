@@ -4,7 +4,7 @@ clc; clear;
 
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
-data_path = '/Volumes/My Passport/Curiosity/v7/Data/KNOT/';
+data_path = '/Volumes/My Passport/Curiosity/v8/Data/KNOT/';
 subj_ID = 106;
 load(strcat(data_path, 'Processed/C_clust_coef/subj_', string(subj_ID), '_C_clust_coef.mat'))
 load(strcat(data_path, 'Processed/Betti/subj_', string(subj_ID), '_bettis.mat'))
@@ -159,7 +159,7 @@ clc; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath(fullfile(base_path, 'Helper')))
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/humanStructureFunction'))
-data_path = fullfile(base_path, 'v7/Data/KNOT/Preprocessed/');
+data_path = fullfile(base_path, 'v8/Data/KNOT/Preprocessed/');
 files = dir(fullfile(data_path, 'subj_*.mat'));
 
 num_subjs = length(files);
@@ -173,21 +173,21 @@ for i = 1:length(files)
     end
 end
 
-proc_data_path = '/Volumes/My Passport/Curiosity/v7/Data/KNOT/Processed';
+proc_data_path = '/Volumes/My Passport/Curiosity/v8/Data/KNOT/Processed';
 num_iters = 25;
 
-C_clust_coef_files = dir(fullfile(proc_data_path, 'C_clust_coef', 'subj_*.mat'));
-
-all_clust_coef = NaN(length(files), max_size);
-all_clust_coef_rewired = NaN(length(files), max_size);
-all_clust_coef_latticized = NaN(length(files), max_size);
-
-for i = 1:length(C_clust_coef_files)
-    load(fullfile(proc_data_path, 'C_clust_coef', C_clust_coef_files(i).name));
-    all_clust_coef(i, 1:length(clust_coef)) = clust_coef;
-    all_clust_coef_rewired(i, 1:length(clust_coef)) = mean(clust_coef_edge_rewired);
-    all_clust_coef_latticized(i, 1:length(clust_coef)) = mean(clust_coef_latticized);
-end
+% C_clust_coef_files = dir(fullfile(proc_data_path, 'C_clust_coef', 'subj_*.mat'));
+% 
+% all_clust_coef = NaN(length(files), max_size);
+% all_clust_coef_rewired = NaN(length(files), max_size);
+% all_clust_coef_latticized = NaN(length(files), max_size);
+% 
+% for i = 1:length(C_clust_coef_files)
+%     load(fullfile(proc_data_path, 'C_clust_coef', C_clust_coef_files(i).name));
+%     all_clust_coef(i, 1:length(clust_coef)) = clust_coef;
+%     all_clust_coef_rewired(i, 1:length(clust_coef)) = mean(clust_coef_edge_rewired);
+%     all_clust_coef_latticized(i, 1:length(clust_coef)) = mean(clust_coef_latticized);
+% end
 
 % figure;
 % hold on
@@ -225,16 +225,16 @@ end
 % title('KNOT', 'FontSize', 20);
 % prettify
 
-all_C = NaN(length(files), max_size);
-all_C_rewired = NaN(length(files), max_size);
-all_C_latticized = NaN(length(files), max_size);
-
-for i = 1:length(C_clust_coef_files)
-    load(fullfile(proc_data_path, 'C_clust_coef', C_clust_coef_files(i).name));
-    all_C(i, 1:length(C)) = C;
-    all_C_rewired(i, 1:length(C)) = mean(C_edge_rewired);
-    all_C_latticized(i, 1:length(C)) = mean(C_latticized);
-end
+% all_C = NaN(length(files), max_size);
+% all_C_rewired = NaN(length(files), max_size);
+% all_C_latticized = NaN(length(files), max_size);
+% 
+% for i = 1:length(C_clust_coef_files)
+%     load(fullfile(proc_data_path, 'C_clust_coef', C_clust_coef_files(i).name));
+%     all_C(i, 1:length(C)) = C;
+%     all_C_rewired(i, 1:length(C)) = mean(C_edge_rewired);
+%     all_C_latticized(i, 1:length(C)) = mean(C_latticized);
+% end
 
 % figure;
 % hold on
@@ -272,14 +272,14 @@ end
 % title('KNOT', 'FontSize', 20);
 % prettify
 
-Betti_files = dir(fullfile(proc_data_path, 'Betti', 'subj_*.mat'));
+PH_files = dir(fullfile(proc_data_path, 'PH_Matlab', 'subj_*.mat'));
 
-all_Betti = NaN(length(Betti_files), max_size);
-all_Betti_rewired = NaN(length(Betti_files), max_size);
-all_Betti_latticized = NaN(length(Betti_files), max_size);
+all_Betti = NaN(length(PH_files), max_size);
+all_Betti_rewired = NaN(length(PH_files), max_size);
+all_Betti_latticized = NaN(length(PH_files), max_size);
 
-for i = 1:length(Betti_files)
-    load(fullfile(proc_data_path, 'Betti', Betti_files(i).name));
+for i = 1:length(PH_files)
+    load(fullfile(proc_data_path, 'PH_Matlab', PH_files(i).name));
     all_Betti(i, 1:length(bettis_orig(2, :))) = bettis_orig(2, :);
     all_Betti_rewired(i, 1:length(bettis_orig(2, :))) = ...
         mean(bettis_1_edges_rewired);
