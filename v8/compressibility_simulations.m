@@ -1,7 +1,5 @@
 clc; close all; clear;
 
-tic
-
 %% Preparatory
 
 base_path = '/Volumes/My Passport/Curiosity/';
