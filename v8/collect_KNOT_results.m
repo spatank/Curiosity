@@ -32,6 +32,7 @@ num_nodes = NaN(length(files_C), 1);
 num_edges = NaN(length(files_C), 1);
 all_C = NaN(length(files_C), max_size);
 all_d = NaN(length(files_C), max_size);
+num_change_points = NaN(length(files_C), 1);
 all_DoF_C = NaN(length(files_C), max_size);
 all_Betti_0 = NaN(length(files_C), max_size);
 all_Betti_1 = NaN(length(files_C), max_size);
@@ -47,6 +48,7 @@ for i = 1:length(files_C)
     struct_3 = load(strcat(data_path_Mech, files_Mech(i).name));
     assert(struct_2.subj_ID == struct_3.subj_ID);
     all_d(i, 1:num_nodes(i)) = struct_3.d;
+    num_change_points(i) = length(find(diff(struct_3.d) == 1));
     all_DoF_C(i, 1:num_nodes(i)) = struct_3.conform;
     struct_4 = load(strcat(data_path_PH, files_PH(i).name));
     % Ideally, it would be nice to assert(struct_3.subj_ID == struct_4.subj_ID);
@@ -55,12 +57,12 @@ for i = 1:length(files_C)
     all_Betti_2(i, 1:num_nodes(i)) = struct_4.bettis_orig(3, :);
 end
 
-ID = int64(ID); % convert to int type for downstream R `merge' usage
+ID = int64(ID); % possibly unnecessary conversion to int type for R
 
 %% Store for analysis in R
 
 clearvars -except ID density num_nodes num_edges ...
-    all_C all_d all_DoF_C ...
+    all_C all_d num_change_points all_DoF_C ...
     all_Betti_0 all_Betti_1 all_Betti_2
 
 save('/Volumes/My Passport/Curiosity/v8/Data/KNOT/processed_KNOT_data.mat');
