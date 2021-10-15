@@ -15,19 +15,129 @@ library(nlme)
 ```
 
 ```{r}
-processed_data <- read.csv("/Volumes/My Passport/Curiosity/v8/Data/KNOT/processed_KNOT_data.csv", header = TRUE)
-# raw_data <- read.csv("/Volumes/My Passport/Curiosity/Data/KNOT_data_raw.csv", header = TRUE)
-# all_data <- merge(processed_data, raw_data, by = "ID", all = TRUE)
+all_data <- read.csv("/Volumes/My Passport/Curiosity/v8/Data/KNOT/processed_KNOT_data.csv", header = TRUE)
+all_data$Gender <- as.factor(all_data$Gender)
 ```
 
 ```{r}
-head(processed_data)
+head(all_data)
+```
+
+
+```{r}
+# create longitudinal plot for Betti 0
+plot_obs <- ggplot(data = all_data, aes(x = Node, y = Betti_0, group = ID))
+print(plot_obs + geom_line())
+```
+
+
+```{r}
+model_1 <- lme(fixed = Betti_0 ~ 1 + Node*DS, 
+              data = all_data,
+              random = ~ 1 + Node | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_1)
 ```
 
 ```{r}
-head(raw_data)
+model_2 <- lme(fixed = Betti_0 ~ 1 + log(Node)*DS, 
+              data = all_data,
+              random = ~ 1 + log(Node) | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_2)
 ```
 
+```{r}
+all_data$NodeQuad <- all_data$Node * all_data$Node
+model_3 <- lme(fixed = Betti_0 ~ 1 + NodeQuad*DS, 
+              data = all_data,
+              random = ~ 1 + NodeQuad | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_3)
+```
+
+```{r}
+all_data$NodeQuad <- all_data$Node * all_data$Node
+model_4 <- lme(fixed = Betti_0 ~ 1 + Node*DS + NodeQuad*DS, 
+              data = all_data,
+              random = ~ 1 + Node + NodeQuad | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_4)
+```
+
+```{r}
+# create longitudinal plot for Betti 1
+plot_obs <- ggplot(data = all_data, aes(x = Node, y = Betti_1, group = ID))
+print(plot_obs + geom_line())
+```
+
+```{r}
+model_5 <- lme(fixed = Betti_1 ~ 1 + Node*DS, 
+              data = all_data,
+              random = ~ 1 + Node | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_5)
+```
+
+```{r}
+all_data$NodeQuad <- all_data$Node * all_data$Node
+model_6 <- lme(fixed = Betti_1 ~ 1 + NodeQuad*DS, 
+              data = all_data,
+              random = ~ 1 + NodeQuad | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_6)
+```
+
+```{r}
+all_data$NodeQuad <- all_data$Node * all_data$Node
+model_7 <- lme(fixed = Betti_1 ~ 1 + Node*DS + NodeQuad*DS, 
+              data = all_data,
+              random = ~ 1 + Node + NodeQuad | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_7)
+```
+
+```{r}
+# create longitudinal plot for Betti 2
+plot_obs <- ggplot(data = all_data, aes(x = Node, y = Betti_2, group = ID))
+print(plot_obs + geom_line())
+```
+
+```{r}
+model_8 <- lme(fixed = Betti_2 ~ 1 + Node*DS, 
+              data = all_data,
+              random = ~ 1 + Node | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_8)
+```
+
+```{r}
+all_data$NodeQuad <- all_data$Node * all_data$Node
+model_9 <- lme(fixed = Betti_2 ~ 1 + NodeQuad*DS, 
+              data = all_data,
+              random = ~ 1 + NodeQuad | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_9)
+```
+
+```{r}
+all_data$NodeQuad <- all_data$Node * all_data$Node
+model_10 <- lme(fixed = Betti_2 ~ 1 + Node*DS + NodeQuad*DS, 
+              data = all_data,
+              random = ~ 1 + Node + NodeQuad | ID, 
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_10)
+```
 
 ```{r}
 # create longitudinal plot for compressibility
@@ -36,179 +146,17 @@ print(plot_obs + geom_line())
 ```
 
 ```{r}
-# create longitudinal plot for DoF
-# plot_obs <- ggplot(data = all_data, aes(x = Node, y = DoF, group = ID))
-# print(plot_obs + geom_line())
-```
-
-```{r}
-# create longitudinal plot for Betti
-plot_obs <- ggplot(data = all_data, aes(x = Node, y = Betti, group = ID))
+# create longitudinal plot for conformational degrees of freedom
+plot_obs <- ggplot(data = all_data, aes(x = Node, y = DoF_C, group = ID))
 print(plot_obs + geom_line())
 ```
 
-
 ```{r}
-betti_NG <- lme(fixed = Betti ~ 1, 
-              data = all_data,
-              random = ~ 1 | ID, 
-              na.action = na.omit)
-summary(betti_NG)
-```
-
-
-```{r}
-all_data$pred_betti_NG <- predict(betti_NG)
-all_data$resid_betti_NG <- residuals(betti_NG)
-```
-
-```{r}
-# plotting PREDICTED intra-individual change
-ggplot(data = all_data, aes(x = Node, y = pred_betti_NG, group = ID)) +
-  ggtitle("No Growth Model: Betti Curves") +
-  geom_point() + 
-  geom_line() +
-  xlab("Node") + 
-  ylab("PREDICTED Betti Curve") +
-  geom_hline(yintercept = 17.59, linetype = "dashed", color = "red")
-```
-```{r}
-# Linear growth
-betti_LG <- lme(fixed = Betti ~ 1 + Node, 
-              data = all_data,
-              random = ~ 1 | ID, 
-              na.action = na.omit)
-summary(betti_LG)
-```
-
-```{r}
-# Place individual predictions and residuals into the dataframe
-all_data$pred_betti_LG <- predict(betti_LG)
-all_data$resid_betti_LG <- residuals(betti_LG)
-```
-
-```{r}
-# Create a function for the prototype
-fun_LG <- function(x) {
-  -11.85 + 0.407*x
-}
-```
-
-```{r}
-# plotting PREDICTED intra-individual change
-ggplot(data = all_data, aes(x = Node, y = pred_betti_LG, group = ID)) +
-  ggtitle("Linear Growth & Random Intercept") +
-  geom_point() + 
-  geom_line() +
-  xlab("Node") + 
-  ylab("PREDICTED Betti Curve") +
-  stat_function(fun = fun_LG, color = "red", size = 1, linetype = "dashed")
-```
-
-```{r}
-# Random slope
-betti_LGRS <- lme(fixed = Betti ~ 1 + Node, 
+model_11 <- lme(fixed = DoF_C ~ 1 + Node*DS, 
               data = all_data,
               random = ~ 1 + Node | ID, 
-              na.action = na.omit)
-summary(betti_LGRS)
+              na.action = na.omit,
+              control = lmeControl(opt = "optim"))
+summary(model_11)
 ```
 
-```{r}
-# Place individual predictions and residuals into the dataframe
-all_data$pred_betti_LGRS <- predict(betti_LGRS)
-all_data$resid_betti_LGRS <- residuals(betti_LGRS)
-```
-
-```{r}
-# Create a function for the prototype
-fun_LGRS <- function(x) {
-  -7.17 + 0.31*x
-}
-```
-
-```{r}
-# plotting PREDICTED intra-individual change
-ggplot(data = all_data, aes(x = Node, y = pred_betti_LGRS, group = ID)) +
-  ggtitle("Linear Growth, Random Intercept, Random Slope") +
-  geom_point() + 
-  geom_line() +
-  xlab("Node") + 
-  ylab("PREDICTED Betti Curve") +
-  stat_function(fun = fun_LGRS, color = "red", size = 1, linetype = "dashed")
-```
-```{r}
-# Quadratic growth
-all_data$NodeQuad <- all_data$Node * all_data$Node
-betti_QG <- lme(fixed = Betti ~ 1 + Node + NodeQuad, 
-              data = all_data,
-              random = ~ 1 | ID, 
-              na.action = na.omit)
-summary(betti_QG)
-```
-
-```{r}
-# Place individual predictions and residuals into the dataframe
-all_data$pred_betti_QG <- predict(betti_QG)
-all_data$resid_betti_QG <- residuals(betti_QG)
-```
-
-```{r}
-# Create a function for the prototype
-fun_QG <- function(x) {
-  -2.28 + 0.15*x + 0.00097*x*x
-}
-```
-
-```{r}
-# plotting PREDICTED intra-individual change
-ggplot(data = all_data, aes(x = Node, y = pred_betti_QG, group = ID)) +
-  ggtitle("Quadratic Growth") +
-  geom_point() + 
-  geom_line() +
-  xlab("Node") + 
-  ylab("PREDICTED Betti Curve") +
-  stat_function(fun = fun_QG, color = "red", size = 1, linetype = "dashed")
-```
-
-```{r}
-# Quadratic growth, random slope
-betti_QGRS <- lme(fixed = Betti ~ 1 + Node + NodeQuad, 
-              data = all_data,
-              random = ~ 1 + Node + NodeQuad | ID, 
-              na.action = na.omit)
-summary(betti_QGRS)
-```
-
-```{r}
-# Place individual predictions and residuals into the dataframe
-all_data$pred_betti_QGRS <- predict(betti_QGRS)
-all_data$resid_betti_QGRS <- residuals(betti_QGRS)
-```
-
-```{r}
-# Create a function for the prototype
-fun_QGRS <- function(x) {
-  -0.575 + 0.069*x + 0.0018278*x*x
-}
-```
-
-```{r}
-# plotting PREDICTED intra-individual change
-ggplot(data = all_data, aes(x = Node, y = pred_betti_QGRS, group = ID)) +
-  ggtitle("Quadratic Growth, Random Intercept, Random Slope") +
-  geom_point() + 
-  geom_line() +
-  xlab("Node") + 
-  ylab("PREDICTED Betti Curve") +
-  stat_function(fun = fun_QGRS, color = "red", size = 1, linetype = "dashed")
-```
-
-```{r}
-# Quadratic growth, random slope
-betti_cur <- lme(fixed = Betti ~ 1 + Node + NodeQuad + Node*DS + DS + JE + ST + SC + TS + num_nodes + num_edges, 
-              data = all_data,
-              random = ~ 1 + Node + NodeQuad | ID, 
-              na.action = na.omit)
-summary(betti_cur)
-```

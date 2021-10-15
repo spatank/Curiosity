@@ -1,0 +1,26 @@
+---
+title: "Modeling for KNOT Data: v2"
+output: html_notebook
+---
+
+```{r}
+getwd()
+```
+
+```{r}
+library(ggplot2)
+library(psych)
+library(reshape)
+library(nlme)
+```
+
+```{r}
+all_data <- read.csv("/Volumes/My Passport/Curiosity/v8/Data/KNOT/processed_KNOT_data_no_curves.csv", header = TRUE)
+all_data$Gender <- as.factor(all_data$Gender)
+```
+
+```{r}
+model <- lm(num_change_points ~ Reinforcement*num_nodes, data = all_data)
+summary(model)
+```
+
