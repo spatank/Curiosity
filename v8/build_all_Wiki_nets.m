@@ -5,20 +5,22 @@ clc; close all; clear;
 base_path = '/Volumes/My Passport/Curiosity/';
 addpath(genpath('/Users/sppatankar/Documents/MATLAB/BCT'))
 addpath(genpath(fullfile(base_path, 'Helper')))
-addpath(genpath(fullfile(base_path, 'v8/Data/Wiki/Raw')))
+% addpath(genpath(fullfile(base_path, 'v8/Data/Wiki/Raw')))
+data_path = fullfile(base_path, 'v8/Data/Wiki/Raw');
+files = dir(fullfile(data_path, '*.mat'));
+files = files(arrayfun(@(x) ~strcmp(x.name(1), '.'), files));
 
-topics = ["molecular_biology"; "geometry"; "optics"; "software_engineering"; ...
-    "abstract_algebra"];
+% topics = ["molecular_biology"; "geometry"; "optics"; "software_engineering"; ...
+%     "abstract_algebra"];
 
 %% Build networks
 
 iters = 25; % number of null networks
 rewire = 50; % each edge rewired approximately this many times
 
-for i = 1:length(topics)
-    fprintf('Topic %d of %d.\n', i, length(topics))
-    topic = topics(i);
-    load(strcat(topic, '.mat'));
+for i = 1:length(files)
+    fprintf('Topic %d of %d.\n', i, length(files))
+    load(fullfile(data_path, files(i).name))
     % adj, nodes, topics, edge_info available
     G = double(adj); % some helper functions need double type arguments
     G(logical(eye(size(G)))) = 0; % set diagonal entries to 0
