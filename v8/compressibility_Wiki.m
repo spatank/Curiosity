@@ -14,7 +14,7 @@ num_iters = 25; % for null models
 
 %% Compile metrics of interest 
 
-for topic_idx = 1:length(files)
+for topic_idx = 12:length(files)
         
     fprintf('%s\n', files(topic_idx).name);
     
@@ -127,6 +127,7 @@ for topic_idx = 1:length(files)
     % Save variables of interest    
     parse_filename = split(files(topic_idx).name, '_');
     topic_ID = strjoin(parse_filename(1:end-1), '_');
+    disp(topic_ID)
     save(strcat(topic_ID, '_C.mat'), ...
         'clust_coef', 'C', 'C_norm', 'entropy', ...
         'clust_coef_edge_rewired', 'C_edge_rewired', 'C_norm_edge_rewired', 'entropy_edge_rewired', ...
