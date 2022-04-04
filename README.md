@@ -1,2 +1,1 @@
-# Curiosity
-Code accompanying `Curiosity as filling, compressing, and reconfiguring knowledge networks'.
+# Curiosity as filling, compressing, and reconfiguring knowledge networks
