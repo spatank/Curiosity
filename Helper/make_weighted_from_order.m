@@ -1,6 +1,6 @@
 function weighted_G = make_weighted_from_order(G, node_order)
 % Adapted from code by ASB
-%
+
 % Original at https://github.com/BassettLab/Reorderability_scripts
 % This function returns a matrix with ranks assigned to network edges.
 % 
@@ -27,7 +27,6 @@ weighted_G(logical(eye(n))) = node_order;
 % replace 0 weighted edges with the largest edge weight possible
 % this is equivalent to assigning these edges the worst rank possible
 weighted_G(weighted_G == 0) = Inf;
-
 
 end
 
